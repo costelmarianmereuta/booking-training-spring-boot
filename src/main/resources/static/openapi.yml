@@ -1,0 +1,126 @@
+openapi: 3.0.3
+info:
+  title: Salon Booking API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Salons
+
+paths:
+
+  /api/v1/salons:
+    get:
+      tags: [Salons]
+      summary: Récupérer la liste des salons
+      operationId: getSalons
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Salon'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Salons]
+      summary: Créer un salon
+      operationId: createSalon
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSalonRequest'
+      responses:
+        '201':
+          description: Créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Salon'
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /api/v1/salons/{publicId}:
+    get:
+      tags: [Salons]
+      summary: Récupérer un salon par id
+      operationId: getSalon
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Salon'
+        '404': { $ref: '#/components/responses/NotFound' }
+
+components:
+  schemas:
+    # ✅ Requête de création d'un salon
+    CreateSalonRequest:
+      type: object
+      required: [name, address]
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 120
+        address:
+          $ref: '#/components/schemas/Address'
+
+    # ✅ Salon complet
+    Salon:
+      allOf:
+        - $ref: '#/components/schemas/CreateSalonRequest'
+        - type: object
+          required: [id, createdAt]
+          properties:
+            publicId:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+
+
+    # ✅ Objet réutilisable Address
+    Address:
+      type: object
+      required: [street, postcode, houseNumber, city]
+      properties:
+        street:
+          type: string
+          example: Rue de Paris
+          maxLength: 255
+        houseNumber:
+          type: string
+          example: "12"
+          maxLength: 10
+        postalBox:
+          type: string
+          example: "Boîte 3"
+          maxLength: 10
+        postcode:
+          type: string
+          example: "1000"
+          pattern: "^[0-9]{4}$"
+        city:
+          type: string
+          example: "Bruxelles"
+          maxLength: 120
+
+  responses:
+    BadRequest:
+      description: Données invalides
+    NotFound:
+      description: Ressource introuvable

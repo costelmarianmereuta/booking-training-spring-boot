@@ -1,0 +1,42 @@
+package {{package}};
+
+{{#imports}}
+import {{import}};
+{{/imports}}
+
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
+
+{{#models}}
+{{#model}}
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class {{classname}} {
+
+{{#vars}}
+    {{#required}}
+        @NotNull
+    {{/required}}
+    {{#minLength}}
+        @Size(min={{minLength}}{{#maxLength}}, max={{maxLength}}{{/maxLength}})
+    {{/minLength}}
+    {{^minLength}}{{#maxLength}}
+        @Size(max={{maxLength}})
+    {{/maxLength}}{{/minLength}}
+     @JsonProperty("{{baseName}}")
+     {{#isDateTime}}private LocalDateTime {{name}};{{/isDateTime}}{{^isDateTime}}private {{datatype}} {{name}};{{/isDateTime}}
+{{/vars}}
+
+
+}
+{{/model}}
+{{/models}}
