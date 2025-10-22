@@ -156,10 +156,10 @@ jobs:
   sonar-quality:
     name: SonarCloud Quality Analysis
     runs-on: ubuntu-latest
-    needs: [build, integration-tests ]   # start after Integration tests
+    needs: [ build, integration-tests ]
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup JDK 21
@@ -169,13 +169,31 @@ jobs:
           java-version: '21'
           cache: maven
 
-      # 1️⃣ Rulează testele și generează raportul JaCoCo
-      - name: Run tests & generate coverage report
+      # (debug) arată unde rulezi și ce variabile sonar există
+      - name: Debug workspace & env
+        run: |
+          pwd
+          ls -la
+          git rev-parse --show-toplevel
+          echo "SONAR_HOST_URL=$SONAR_HOST_URL"
+          echo "Grepping for sonar.host.url in repo..."
+          grep -R --line-number "sonar.host.url" || true
+          test -f pom.xml || (echo "pom.xml not found in cwd" && exit 1)
+
+      # Rulează teste + generează raportul JaCoCo XML
+      - name: Tests + coverage
         run: mvn -B clean verify jacoco:report
 
-      # 2️⃣ Rulează analiza SonarCloud
-      - name: SonarCloud analysis
+      # ANALIZA SonarCloud — forțăm TOT din linia de comandă și prin env
+      - name: SonarCloud analysis (Maven)
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B sonar:sonar -Dsonar.login=$SONAR_TOKEN
+          SONAR_HOST_URL: https://sonarcloud.io     # override prin env, dacă există ceva vechi
+        run: >
+          mvn -B sonar:sonar
+          -Dsonar.login=$SONAR_TOKEN
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.organization=costelmariannemureuta
+          -Dsonar.projectKey=costelmariannemureuta_booking-training-spring-boot
+  
 
