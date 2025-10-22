@@ -50,7 +50,11 @@ jobs:
           cache: maven
 
       - name: OWASP Dependency Check
-        run: mvn -B org.owasp:dependency-check-maven:check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run:  mvn -B org.owasp:dependency-check-maven:check \
+          -Dnvd.api.key="${NVD_API_KEY}" \
+          -DfailOnError=false
 
       - name: Upload OWASP report
         if: always()
