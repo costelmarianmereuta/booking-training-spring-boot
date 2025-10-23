@@ -1,12 +1,11 @@
 package training.salonzied.dao.repo;
 
-import training.salonzied.dao.entities.SalonEntity;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
+import training.salonzied.dao.entities.SalonEntity;
 
 @Repository
 public interface SalonRepository extends JpaRepository<SalonEntity, Long> {
-    Optional<SalonEntity> findByPublicId(String publicId);
+  Optional<SalonEntity> findByPublicId(String publicId);
 }

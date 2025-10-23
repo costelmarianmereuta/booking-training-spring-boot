@@ -14,18 +14,18 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Address {
 
-    @Column(name = "street")
-    private String street;
+  @Column(name = "street")
+  private String street;
 
-    @Column(name = "house_number", length = 10)
-    private String houseNumber;
+  @Column(name = "house_number", length = 10)
+  private String houseNumber;
 
-    @Column(name = "postal_box", length = 10)
-    private String postalBox;
+  @Column(name = "postal_box", length = 10)
+  private String postalBox;
 
-    @Column(name = "postcode", length = 10, nullable = false)
-    private String postcode;
+  @Column(name = "postcode", length = 10, nullable = false)
+  private String postcode;
 
-    @Column(name = "city", length = 120)
-    private String city;
+  @Column(name = "city", length = 120)
+  private String city;
 }
