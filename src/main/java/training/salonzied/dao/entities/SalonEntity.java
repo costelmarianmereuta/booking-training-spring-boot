@@ -25,7 +25,8 @@ public class SalonEntity {
   @Column(name = "name", nullable = false, length = 120)
   private String name;
 
-  @Embedded private Address address;
+  @Embedded
+  private Address address;
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)

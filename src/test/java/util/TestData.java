@@ -29,10 +29,11 @@ public class TestData {
         .name("Salon Prestige")
         .address(
             Address.builder()
+                    .street("str proiectantului")
                 .city("Bacau")
                 .houseNumber("12B")
                 .postalBox("a12")
-                .postcode("1080")
+                .postcode("1235")
                 .build())
         .createdAt(LocalDateTime.of(2025, 10, 18, 10, 0))
         .build();
@@ -46,6 +47,7 @@ public class TestData {
         .address(
             training.salonzied.dao.entities.Address.builder()
                 .city("Bacau")
+                    .street("str proiectantului")
                 .houseNumber("12B")
                 .postalBox("a12")
                 .postcode("1080")
