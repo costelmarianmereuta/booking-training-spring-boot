@@ -91,7 +91,8 @@ jobs:
       # Rulează DOAR integration tests (Failsafe)
       # verify va rula: pre-integration-test, integration-test, post-integration-test, failsafe:verify
       - name: Run integration tests (Failsafe)
-        run: mvn -B -DskipTests=true -DskipITs=false verify
+        run: mvn -B -DskipTests=false -DskipITs=false verify
+
 
       - name: Upload integration test reports
         if: always()
