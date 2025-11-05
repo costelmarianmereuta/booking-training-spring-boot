@@ -303,6 +303,66 @@
             </plugin>
 
 
+                    <!-- Tests unitaires -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.5.4</version>
+                        <!-- (optionnel) pour contrôler finement le skip UT -->
+                        <!-- <configuration>
+                          <skipTests>${skipUTs}</skipTests>
+                        </configuration> -->
+                    </plugin>
+
+                    <!-- Tests d'intégration -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>3.5.4</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <!-- (optionnel) inclusions explicites si tu veux être strict -->
+                                <!--
+                                <configuration>
+                                  <includes>
+                                    <include>**/*IT.java</include>
+                                    <include>**/*ITCase.java</include>
+                                    <include>**/IT*.java</include>
+                                  </includes>
+                                </configuration>
+                                -->
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- (optionnel) JaCoCo si tu veux couvrir aussi les IT -->
+                    <!--
+                    <plugin>
+                      <groupId>org.jacoco</groupId>
+                      <artifactId>jacoco-maven-plugin</artifactId>
+                      <version>0.8.11</version>
+                      <configuration>
+                        <append>true</append>
+                      </configuration>
+                      <executions>
+                        <execution>
+                          <goals><goal>prepare-agent</goal></goals>
+                        </execution>
+                        <execution>
+                          <id>report-it</id>
+                          <phase>verify</phase>
+                          <goals><goal>report</goal></goals>
+                        </execution>
+                      </executions>
+                    </plugin>
+                    -->
+
+
+
 
         </plugins>
     </build>
