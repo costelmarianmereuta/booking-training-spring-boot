@@ -44,6 +44,7 @@ paths:
                 $ref: '#/components/schemas/Salon'
         '400': { $ref: '#/components/responses/BadRequest' }
 
+
   /api/v1/salons/{publicId}:
     get:
       tags: [Salons]
@@ -65,12 +66,66 @@ paths:
                 $ref: '#/components/schemas/Salon'
         '404': { $ref: '#/components/responses/NotFound' }
 
+    put:
+      tags: [ Salons ]
+      summary: Modifier un salon existant
+      operationId: updateSalon
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSalonRequest'
+      responses:
+        '200':
+          description: Mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Salon'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [ Salons ]
+      summary: Supprimer un salon
+      operationId: deleteSalon
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Supprimé avec succès
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+
 components:
   schemas:
     # ✅ Requête de création d'un salon
     CreateSalonRequest:
       type: object
       required: [name, address]
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 120
+        address:
+          $ref: '#/components/schemas/Address'
+    #modifier salon
+    UpdateSalonRequest:
+      type: object
       properties:
         name:
           type: string

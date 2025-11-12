@@ -2,6 +2,7 @@ package training.salonzied.api;
 
 import com.salonized.dto.CreateSalonRequest;
 import com.salonized.dto.Salon;
+import com.salonized.dto.UpdateSalonRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,15 @@ public class SalonApi {
   public ResponseEntity<Salon> createSalon(@Valid @RequestBody CreateSalonRequest request) {
     Salon salon = salonService.createSalon(request);
     return ResponseEntity.status(HttpStatus.CREATED).body(salon);
+  }
+  @PutMapping("/{publicId}")
+  public ResponseEntity<Salon> updateSalon(@Valid @RequestBody UpdateSalonRequest request, @PathVariable String publicId) {
+    Salon salon = salonService.updateSalon(publicId, request);
+    return ResponseEntity.status(HttpStatus.OK).body(salon);
+  }
+  @DeleteMapping("/{publicId}")
+  public ResponseEntity<Void> deleteSalonByPublicId(@PathVariable String publicId) {
+    salonService.deleteSalon(publicId);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

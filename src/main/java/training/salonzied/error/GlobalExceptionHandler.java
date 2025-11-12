@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  // --- Domeniu ---
+
   @ExceptionHandler(EntityNotFoundException.class)
   public ProblemDetail notFound(EntityNotFoundException ex, HttpServletRequest req) {
     return problem(HttpStatus.NOT_FOUND, ex.getMessage(), ErrorCode.ENTITY_NOT_FOUND, req);
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
         HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), ErrorCode.UNPROCESSABLE_ENTITY, req);
   }
 
-  // --- 400 (validări / input tehnic) ---
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ProblemDetail badRequestBody(MethodArgumentNotValidException ex, HttpServletRequest req) {
     ProblemDetail p =
@@ -73,7 +73,6 @@ public class GlobalExceptionHandler {
         HttpStatus.BAD_REQUEST, "Malformed or unreadable JSON payload", ErrorCode.BAD_REQUEST, req);
   }
 
-  // --- HTTP framework ---
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   public ProblemDetail methodNotAllowed(
       HttpRequestMethodNotSupportedException ex, HttpServletRequest req) {
@@ -99,7 +98,7 @@ public class GlobalExceptionHandler {
     return p;
   }
 
-  // --- 500 ---
+
   @ExceptionHandler(DataAccessException.class)
   public ProblemDetail dataAccess(DataAccessException ex, HttpServletRequest req) {
     return problem(
@@ -118,7 +117,6 @@ public class GlobalExceptionHandler {
         req);
   }
 
-  // --- util comun ---
   private ProblemDetail problem(
       HttpStatus status, String detail, ErrorCode code, HttpServletRequest req) {
     ProblemDetail p = ProblemDetail.forStatus(status);

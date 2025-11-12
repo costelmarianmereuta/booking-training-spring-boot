@@ -4,6 +4,8 @@ import com.salonized.dto.Address;
 import com.salonized.dto.CreateSalonRequest;
 import com.salonized.dto.Salon;
 import java.time.LocalDateTime;
+
+import com.salonized.dto.UpdateSalonRequest;
 import lombok.experimental.UtilityClass;
 import training.salonzied.dao.entities.SalonEntity;
 
@@ -12,47 +14,61 @@ public class TestData {
 
   public CreateSalonRequest getCreateSalonRequest() {
     return CreateSalonRequest.builder()
-        .name("Salon")
-        .address(
-            Address.builder()
-                .city("Bacau")
-                .houseNumber("12B")
-                .postalBox("a12")
-                .postcode("1080")
-                .build())
-        .build();
+            .name("Salon")
+            .address(
+                    Address.builder()
+                            .city("Bacau")
+                            .houseNumber("12B")
+                            .postalBox("a12")
+                            .postcode("1080")
+                            .build())
+            .build();
   }
 
   public Salon getSalon() {
     return Salon.builder()
-        .publicId("b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3")
-        .name("Salon Prestige")
-        .address(
-            Address.builder()
-                    .street("str proiectantului")
-                .city("Bacau")
-                .houseNumber("12B")
-                .postalBox("a12")
-                .postcode("1235")
-                .build())
-        .createdAt(LocalDateTime.of(2025, 10, 18, 10, 0))
-        .build();
+            .publicId("b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3")
+            .name("Salon Prestige")
+            .address(
+                    Address.builder()
+                            .street("str proiectantului")
+                            .city("Bacau")
+                            .houseNumber("12B")
+                            .postalBox("a12")
+                            .postcode("1235")
+                            .build())
+            .createdAt(LocalDateTime.of(2025, 10, 18, 10, 0))
+            .build();
   }
 
   public SalonEntity getSalonEntity() {
     return SalonEntity.builder()
-        .id(1L)
-        .publicId("b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3")
-        .name("Salon Prestige")
-        .address(
-            training.salonzied.dao.entities.Address.builder()
-                .city("Bacau")
-                    .street("str proiectantului")
-                .houseNumber("12B")
-                .postalBox("a12")
-                .postcode("1080")
-                .build())
-        .createdAt(LocalDateTime.now())
-        .build();
+            .id(1L)
+            .publicId("b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3")
+            .name("Salon Prestige")
+            .address(
+                    training.salonzied.dao.entities.Address.builder()
+                            .city("Bacau")
+                            .street("str proiectantului")
+                            .houseNumber("12B")
+                            .postalBox("a12")
+                            .postcode("1080")
+                            .build())
+            .createdAt(LocalDateTime.now())
+            .build();
   }
+
+  public UpdateSalonRequest getUpdateSalonRequest() {
+    return UpdateSalonRequest.builder()
+            .name("Lys Salon")
+            .address(Address.builder()
+                    .street("str proiectantului")
+                    .city("Bacau")
+                    .houseNumber("12B")
+                    .postalBox("a12")
+                    .postcode("1235")
+                    .build())
+            .build();
+  }
+
 }

@@ -14,4 +14,6 @@ public interface SalonMapper {
 
   // Convertit Entity -> DTO (pour retour API)
   Salon entityToSalonDto(SalonEntity entity);
+
+
 }

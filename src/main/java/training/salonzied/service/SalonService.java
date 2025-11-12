@@ -5,6 +5,9 @@ import com.salonized.dto.Salon;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.salonized.dto.UpdateSalonRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,5 +42,35 @@ public class SalonService {
       throw new EntityNotFoundException("Salon", publicId);
     }
     return salonEntity.map(salonMapper::entityToSalonDto).orElseThrow();
+  }
+
+  public Salon updateSalon(String publicId, @Valid UpdateSalonRequest request) {
+    SalonEntity salonEntity = salonRepository.findByPublicId(publicId)
+            .orElseThrow(()->{
+              log.error("Salon not found with id: {}", publicId);
+              return new EntityNotFoundException("Salon", publicId);
+            });
+
+    updateSalon(request, salonEntity);
+    salonRepository.save(salonEntity);
+
+    return salonMapper.entityToSalonDto(salonEntity);
+  }
+
+  private void updateSalon(UpdateSalonRequest request, SalonEntity salonEntity) {
+    salonEntity.setName(request.getName());
+    salonEntity.getAddress().setCity(request.getAddress().getCity());
+    salonEntity.getAddress().setStreet(request.getAddress().getStreet());
+    salonEntity.getAddress().setHouseNumber(request.getAddress().getHouseNumber());
+    salonEntity.getAddress().setPostalBox(request.getAddress().getPostalBox());
+    salonEntity.getAddress().setPostcode(request.getAddress().getPostcode());
+  }
+
+  public void deleteSalon(String publicId) {
+    long deleted = salonRepository.deleteByPublicId(publicId);
+    if (deleted == 0){
+      throw new EntityNotFoundException("Salon", publicId);
+    }
+    log.info("Salon deleted with id: " + publicId);
   }
 }
