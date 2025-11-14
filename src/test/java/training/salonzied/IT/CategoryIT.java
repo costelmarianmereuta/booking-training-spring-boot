@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import training.salonzied.dao.repo.SalonRepository;
 import training.salonzied.dao.repo.TreatmentCategoryRepository;
+import training.salonzied.dao.repo.TreatmentRepository;
 import util.TestData;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -15,21 +16,23 @@ class CategoryIT extends IT {
 
     @Autowired
     SalonRepository salonRepository;
+    @Autowired
+    private TreatmentRepository treatmentRepository;
 
     @Autowired
     TreatmentCategoryRepository treatmentCategoryRepository;
 
     @Override
     public void doSetup() {
+        treatmentRepository.deleteAll();
+
         treatmentCategoryRepository.deleteAll();
         salonRepository.deleteAll();
-        
-        // Setup salon first (required for category)
+
         var salon = TestData.getSalonEntity();
         salon.setId(null);
         salon = salonRepository.save(salon);
-        
-        // Setup category
+
         var category = TestData.getCategoryEntity();
         category.setId(null);
         category.setSalon(salon);
