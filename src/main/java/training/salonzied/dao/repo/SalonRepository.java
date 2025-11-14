@@ -11,6 +11,7 @@ import training.salonzied.dao.entities.SalonEntity;
 @Repository
 public interface SalonRepository extends JpaRepository<SalonEntity, Long> {
   Optional<SalonEntity> findByPublicId(String publicId);
+  Optional<SalonEntity> findByName(String name);
 
   @Transactional
   @Modifying

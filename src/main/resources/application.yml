@@ -1,8 +1,30 @@
+logging:
+  level:
+    root: INFO              # în loc de DEBUG
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+#    net.ttddyy.dsproxy: DEBUG
+#    root: DEBUG
+#    org.springframework: DEBUG
+#    org.springframework.web: TRACE
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE  # paramètres SQL
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#    org.hibernate.engine.transaction.internal: DEBUG
+#    org.hibernate.orm.jdbc.extract: TRACE
+#    com.zaxxer.hikari: DEBUG   # connection pool
+#    org.flywaydb: DEBUG
+
 # application.yml  (default = H2)
 spring:
   profiles:
     active: h2
   datasource:
+    proxy:
+      logging: SLF4J
+      multiline: true
+      json-format: false
     url: jdbc:h2:mem:devdb;MODE=MySQL;DB_CLOSE_DELAY=-1
     username: sa
     password:
@@ -12,6 +34,7 @@ spring:
       ddl-auto: none # flyway is used for validation
     properties:
       hibernate.jdbc.time_zone: UTC
+    show-sql: true
   flyway:
     enabled: true
 
@@ -20,6 +43,7 @@ server:
   servlet:
     context-path: /api/v1
   port: 8080
+
 
 ---
 spring:

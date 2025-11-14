@@ -2,6 +2,8 @@ package training.salonzied.dao.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +30,14 @@ public class SalonEntity {
   @Embedded
   private Address address;
 
+
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
+
+  @Column
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<CategoryEntity> treatmentCategories;
 }

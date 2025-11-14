@@ -1,53 +1,37 @@
 package training.salonzied.IT;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salonized.dto.CreateSalonRequest;
-import com.salonized.dto.Salon;
 import com.salonized.dto.UpdateSalonRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import training.salonzied.api.SalonApi;
 import training.salonzied.dao.repo.SalonRepository;
-import training.salonzied.service.SalonService;
+import training.salonzied.dao.repo.TreatmentCategoryRepository;
+import training.salonzied.dao.repo.TreatmentRepository;
 import util.TestData;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.Arrays;
-import java.util.List;
 
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-class SalonIT {
+class SalonIT extends IT {
 
-    @Autowired
-    MockMvc mockMvc;
     @Autowired
     SalonRepository salonRepository;
-    private boolean skipSetup = false;
-    @Autowired
-    private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp() {
-        if (skipSetup) {
-            return;
-        }
+    @Autowired
+    TreatmentCategoryRepository treatmentCategoryRepository;
+
+    @Autowired
+    TreatmentRepository treatmentRepository;
+
+    @Override
+    public void doSetup() {
+        // Delete in order to respect foreign key constraints
+        treatmentRepository.deleteAll();
+        treatmentCategoryRepository.deleteAll();
         salonRepository.deleteAll();
         var salon = TestData.getSalonEntity();
         salon.setId(null);
@@ -68,8 +52,8 @@ class SalonIT {
     }
 
     @Test
+    @SkipSetupIT
     void addNewSalon() throws Exception {
-        skipSetup = true;
         CreateSalonRequest createSalonRequest = TestData.getCreateSalonRequest();
         mockMvc.perform(post("/salons")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -86,8 +70,8 @@ class SalonIT {
     }
 
     @Test
+    @SkipSetupIT
     void addNewSalonBadRequest() throws Exception {
-        skipSetup = true;
         CreateSalonRequest createSalonRequest = TestData.getCreateSalonRequest();
         createSalonRequest.setName(null);
         mockMvc.perform(post("/salons")
@@ -180,7 +164,6 @@ class SalonIT {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.title").value("Not Found"))
                 .andExpect(jsonPath("$.errorCode").value("ENTITY_NOT_FOUND"));
-
 
     }
 

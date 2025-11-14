@@ -8,7 +8,300 @@ tags:
   - name: Salons
 
 paths:
+  /api/v1/user:
+    get:
+      tags: [ Users ]
+      summary: Get all users
+      operationId: getUsers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags: [ Users ]
+      summary: Create a user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
 
+  /api/v1/user/{email}:
+    get:
+      tags: [ Users ]
+      summary: Get a user by email
+      operationId: getUser
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [ Users ]
+      summary: Update an existing user
+      operationId: updateUser
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [ Users ]
+      summary: Delete a user
+      operationId: deleteUser
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/treatments/category:
+    post:
+      summary: Create a new category for treatment
+      operationId: createTreatmentCategory
+      tags:
+        - Categories
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+      responses:
+        "201":
+          description: Treatment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+    get:
+      summary: Get all categories
+      operationId: getAllCategories
+      tags:
+        - Categories
+      responses:
+        "200":
+          description: List of all categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+  /api/v1/treatments/category/{name}:
+     get:
+       summary: Get category details by name
+       operationId: getCategoryByName
+       tags:
+         - Categories
+       parameters:
+         - name: name
+           in: path
+           required: true
+           schema:
+             type: string
+       responses:
+         "200":
+           description: Categories details
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/Category'
+         "404":
+           description: Treatment not found
+     delete:
+       summary: Delete a category
+       operationId: deleteCategory
+       tags:
+         - Categories
+       parameters:
+         - name: name
+           in: path
+           required: true
+           schema:
+             type: string
+       responses:
+         "204":
+           description: Categories deleted successfully
+         "404":
+           description: Categories not found
+  /api/v1/treatments:
+    get:
+      summary: Get all treatments
+      operationId: getAllTreatments
+      tags:
+        - Treatments
+      responses:
+        "200":
+          description: List of all treatments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Treatment'
+    post:
+      summary: Create a new treatment
+      operationId: createTreatment
+      tags:
+        - Treatments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TreatmentRequest'
+      responses:
+        "201":
+          description: Treatment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Treatment'
+    put:
+      summary: Update an existing category
+      operationId: updateCategory
+      tags:
+        - Categories
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+      responses:
+        "200":
+          description: Treatment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        "404":
+          description: Treatment not found
+
+
+  /api/v1/treatments/{name}:
+    get:
+      summary: Get treatment details by name
+      operationId: getTreatmentByName
+      tags:
+        - Treatments
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Treatment details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Treatment'
+        "404":
+          description: Treatment not found
+    put:
+      summary: Update an existing treatment
+      operationId: updateTreatment
+      tags:
+        - Treatments
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TreatmentRequest'
+      responses:
+        "200":
+          description: Treatment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Treatment'
+        "404":
+          description: Treatment not found
+
+    delete:
+      summary: Delete a treatment
+      operationId: deleteTreatment
+      tags:
+        - Treatments
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Treatment deleted successfully
+        "404":
+          description: Treatment not found
   /api/v1/salons:
     get:
       tags: [Salons]
@@ -112,6 +405,164 @@ paths:
 
 components:
   schemas:
+    CreateUserRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+      properties:
+        firstName:
+          type: string
+          maxLength: 80
+          example: "Maria"
+        lastName:
+          type: string
+          maxLength: 80
+          example: "Popescu"
+        email:
+          type: string
+          format: email
+          example: "maria.popescu@example.com"
+        phone:
+          type: string
+          maxLength: 20
+          example: "+32 470 12 34 56"
+        birthDate:
+          type: string
+          format: date
+          example: "1995-03-21"
+        gender:
+          type: string
+          example: "female"
+          description: "Gender of the client (e.g. male, female, other)"
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 80
+        lastName:
+          type: string
+          maxLength: 80
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          maxLength: 20
+        birthDate:
+          type: string
+          format: date
+        gender:
+          type: string
+
+    User:
+      allOf:
+        - $ref: '#/components/schemas/CreateUserRequest'
+        - type: object
+          required:
+            - publicId
+            - createdAt
+          properties:
+            publicId:
+              type: string
+              example: "4a2f1e8c-11aa-4d8c-bd88-b0c82a8ff21e"
+            createdAt:
+              type: string
+              format: date-time
+              example: 2025-11-13T10:30:00Z
+            updatedAt:
+              type: string
+              format: date-time
+              example: 2025-11-13T11:00:00Z
+
+    TreatmentRequest:
+      type: object
+      required:
+        - name
+        - price
+        - duration
+        - category
+      properties:
+        name:
+          type: string
+          example: Facial massage
+        price:
+          type: number
+          format: double
+          example: 120.0
+        duration:
+          type: integer
+          description: Duration of the treatment in minutes
+          example: 45
+        timeBetweenTreatments:
+          type: integer
+          description: Recommended break time between treatments (in minutes)
+          example: 15
+        description:
+          type: string
+          example: this treatment ...
+          maxLength: 512
+        categoryName:
+          type: string
+          example: epilation
+
+    CategoryBase:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Facial care
+        description:
+          type: string
+          example: Treatments focused on facial skin care and relaxation
+    CategoryRequest:
+      allOf:
+        - $ref: '#/components/schemas/CategoryBase'
+        - type: object
+          properties:
+            salonPublicId:
+              type: string
+              example: "b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3"
+    Category:
+      allOf:
+        - $ref: '#/components/schemas/CategoryBase'
+        - type: object
+          properties:
+            salonName:
+              type: string
+              example: "Salon Prestige"
+            createdAt:
+              type: string
+              format: date-time
+              readOnly: true
+              example: 2025-11-13T10:30:00Z
+            updatedAt:
+              type: string
+              format: date-time
+              readOnly: true
+              example: 2025-11-13T11:00:00Z
+
+    Treatment:
+      allOf:
+        - $ref: '#/components/schemas/TreatmentRequest'
+        - type: object
+          properties:
+            createdAt:
+              type: string
+              format: date-time
+              readOnly: true
+              example: 2025-11-13T10:30:00Z
+            updatedAt:
+              type: string
+              format: date-time
+              readOnly: true
+              example: 2025-11-13T11:00:00Z
+
     # ✅ Requête de création d'un salon
     CreateSalonRequest:
       type: object
