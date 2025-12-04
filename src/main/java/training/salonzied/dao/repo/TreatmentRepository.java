@@ -10,4 +10,5 @@ public interface TreatmentRepository extends JpaRepository<TreatmentEntity,Integ
     boolean existsByName(String name);
     Optional<TreatmentEntity> findByName(String name);
     long deleteByName(String name);
+
 }

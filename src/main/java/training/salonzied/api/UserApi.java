@@ -5,6 +5,7 @@ import com.salonized.dto.UpdateUserRequest;
 import com.salonized.dto.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import training.salonzied.service.UserService;
@@ -25,7 +26,7 @@ public class UserApi {
     @PostMapping
     public ResponseEntity<User> createUser(@Valid @RequestBody CreateUserRequest request){
         User user=userService.addUser(request);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
     @PutMapping("/{email}")
     public ResponseEntity<User> updateUser(@Valid @RequestBody UpdateUserRequest request, @PathVariable String email){

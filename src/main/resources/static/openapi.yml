@@ -8,6 +8,133 @@ tags:
   - name: Salons
 
 paths:
+  /api/v1/reservations:
+    get:
+      tags: [ Reservations ]
+      summary: Get all reservations (optionally filtered)
+      operationId: getReservations
+      parameters:
+        - name: salonPublicId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: userPublicId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: treatmentName
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ReservationStatus'
+      responses:
+        "200":
+          description: List of reservations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservation'
+
+    post:
+      tags: [ Reservations ]
+      summary: Create a reservation
+      operationId: createReservation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+      responses:
+        "201":
+          description: Reservation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/reservations/{publicId}:
+    get:
+      tags: [ Reservations ]
+      summary: Get a reservation by publicId
+      operationId: getReservationById
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Reservation found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [ Reservations ]
+      summary: Update a reservation
+      operationId: updateReservation
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationUpdateRequest'
+      responses:
+        "200":
+          description: Reservation updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [ Reservations ]
+      summary: Delete a reservation
+      operationId: deleteReservation
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted successfully
+        "404":
+          $ref: '#/components/responses/NotFound'
+
   /api/v1/user:
     get:
       tags: [ Users ]
@@ -141,42 +268,42 @@ paths:
                 items:
                   $ref: '#/components/schemas/Category'
   /api/v1/treatments/category/{name}:
-     get:
-       summary: Get category details by name
-       operationId: getCategoryByName
-       tags:
-         - Categories
-       parameters:
-         - name: name
-           in: path
-           required: true
-           schema:
-             type: string
-       responses:
-         "200":
-           description: Categories details
-           content:
-             application/json:
-               schema:
-                 $ref: '#/components/schemas/Category'
-         "404":
-           description: Treatment not found
-     delete:
-       summary: Delete a category
-       operationId: deleteCategory
-       tags:
-         - Categories
-       parameters:
-         - name: name
-           in: path
-           required: true
-           schema:
-             type: string
-       responses:
-         "204":
-           description: Categories deleted successfully
-         "404":
-           description: Categories not found
+    get:
+      summary: Get category details by name
+      operationId: getCategoryByName
+      tags:
+        - Categories
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Categories details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        "404":
+          description: Treatment not found
+    delete:
+      summary: Delete a category
+      operationId: deleteCategory
+      tags:
+        - Categories
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Categories deleted successfully
+        "404":
+          description: Categories not found
   /api/v1/treatments:
     get:
       summary: Get all treatments
@@ -405,6 +532,122 @@ paths:
 
 components:
   schemas:
+    ReservationStatus:
+      type: string
+      description: Status of the reservation
+      enum:
+        - SCHEDULED
+        - CANCELLED
+        - COMPLETED
+    DayOfWeek:
+      type: string
+      description: days of the week for the schedule
+      x-java-type: java.time.DayOfWeek
+      enum:
+        - MONDAY
+        - TUESDAY
+        - WEDNESDAY
+        - THURSDAY
+        - FRIDAY
+        - SATURDAY
+        - SUNDAY
+
+
+    WorkingHours:
+      type: object
+      required: [ dayOfWeek, startTime, endTime ]
+      properties:
+        dayOfWeek:
+          $ref: '#/components/schemas/DayOfWeek'
+        startTime:
+          type: string
+          format: time
+          example: "09:00:00"
+        endTime:
+          type: string
+          format: time
+          example: "18:00:00"
+
+    SpecialWorkingHours:
+      properties:
+        closingDay:
+          type: string
+          format: date
+          example: "2025-12-25"
+        startTime:
+          type: string
+          format: time
+          example: "09:00:00"
+        endTime:
+          type: string
+          format: time
+          example: "18:00:00"
+        closedAllDay:
+          type: boolean
+          example: FALSE
+
+
+
+    ReservationRequest:
+      type: object
+      required:
+        - salonPublicId
+        - userPublicId
+        - treatmentName
+        - startTime
+      properties:
+        salonPublicId:
+          type: string
+          example: "b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3"
+        userPublicId:
+          type: string
+          example: "u1a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3"
+        treatmentName:
+          type: string
+          example: "Facial massage"
+        startTime:
+          type: string
+          format: date-time
+          example: 2025-11-20T10:30:00Z
+        notes:
+          type: string
+          maxLength: 512
+          example: "Client prefers a soft massage and has allergy to certain oils."
+
+    Reservation:
+      allOf:
+        - $ref: '#/components/schemas/ReservationRequest'
+        - type: object
+          properties:
+            publicId:
+              type: string
+              example: "r3a6e8e2-1b23-4f91-8e71-11aa22bb33cc"
+            status:
+              $ref: '#/components/schemas/ReservationStatus'
+            priceOfBooking:
+              type: number
+              format: double
+              example: 75.00
+              description: Price of the treatment at the time of booking
+            durationOfBooking:
+              type: integer
+              example: 60
+              description: Duration in minutes at the time of booking
+            endTime:
+              type: string
+              format: date-time
+              readOnly: true
+              example: 2025-11-20T11:30:00Z
+            createdAt:
+              type: string
+              format: date-time
+              readOnly: true
+              example: 2025-11-13T10:30:00Z
+            updatedAt:
+              type: string
+              format: date-time
+              readOnly: true
+              example: 2025-11-13T11:00:00Z
     CreateUserRequest:
       type: object
       required:
@@ -477,6 +720,34 @@ components:
               type: string
               format: date-time
               example: 2025-11-13T11:00:00Z
+            workingHours:
+              type: array
+              description: Weekly opening hours of the salon
+              items:
+                $ref: '#/components/schemas/WorkingHours'
+            specialWorkingHours:
+              type: array
+              description: Weekly opening hours of the salon
+              items:
+                $ref: '#/components/schemas/SpecialWorkingHours'
+
+
+
+
+    ReservationUpdateRequest:
+      type: object
+      properties:
+        treatmentName:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        notes:
+          type: string
+          maxLength: 512
+        status:
+          $ref: '#/components/schemas/ReservationStatus'
+
 
     TreatmentRequest:
       type: object
@@ -574,6 +845,17 @@ components:
           maxLength: 120
         address:
           $ref: '#/components/schemas/Address'
+        openingHours:
+          type: array
+          description: Weekly opening hours of the salon
+          items:
+            $ref: '#/components/schemas/WorkingHours'
+        specialOpeningHours:
+          type: array
+          description: Weekly opening hours of the salon
+          items:
+            $ref: '#/components/schemas/SpecialWorkingHours'
+
     #modifier salon
     UpdateSalonRequest:
       type: object
@@ -584,6 +866,16 @@ components:
           maxLength: 120
         address:
           $ref: '#/components/schemas/Address'
+        openingHours:
+          type: array
+          description: Weekly opening hours of the salon
+          items:
+            $ref: '#/components/schemas/WorkingHours'
+        specialOpeningHours:
+          type: array
+          description: Weekly opening hours of the salon
+          items:
+            $ref: '#/components/schemas/SpecialWorkingHours'
 
     # ✅ Salon complet
     Salon:
@@ -597,6 +889,18 @@ components:
             createdAt:
               type: string
               format: date-time
+            openingHours:
+              type: array
+              description: Weekly opening hours of the salon
+              items:
+                $ref: '#/components/schemas/WorkingHours'
+            specialOpeningHours:
+              type: array
+              description: Weekly opening hours of the salon
+              items:
+                $ref: '#/components/schemas/SpecialWorkingHours'
+
+
 
 
     # ✅ Objet réutilisable Address

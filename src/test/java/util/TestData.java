@@ -4,12 +4,17 @@ import com.salonized.dto.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.experimental.UtilityClass;
 import training.salonzied.dao.entities.SalonEntity;
 import training.salonzied.dao.entities.CategoryEntity;
 import training.salonzied.dao.entities.TreatmentEntity;
 import training.salonzied.dao.entities.UserEntity;
+import training.salonzied.dao.entities.ReservationEntity;
+import training.salonzied.dao.entities.WorkingHour;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 
 @UtilityClass
 public class TestData {
@@ -153,6 +158,72 @@ public class TestData {
             .gender("female")
             .createdAt(LocalDateTime.now())
             .build();
+  }
+
+  public ReservationRequest getReservationRequest() {
+    ReservationRequest request = new ReservationRequest();
+    request.setSalonPublicId("b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3");
+    request.setUserPublicId("4a2f1e8c-11aa-4d8c-bd88-b0c82a8ff21e");
+    request.setTreatmentName("Hydrafacial");
+    request.setStartTime(LocalDateTime.of(2025, 12, 20, 10, 30)); // Luni, 10:30
+    request.setNotes("Client prefers soft massage");
+    return request;
+  }
+
+  public ReservationUpdateRequest getReservationUpdateRequest() {
+    ReservationUpdateRequest request = new ReservationUpdateRequest();
+    request.setStartTime(LocalDateTime.of(2025, 12, 20, 14, 0)); // Luni, 14:00
+    request.setNotes("Updated notes");
+    return request;
+  }
+
+  public ReservationEntity getReservationEntity() {
+    return ReservationEntity.builder()
+            .id(1L)
+            .publicId("reservation-123")
+            .startTime(LocalDateTime.of(2025, 12, 20, 10, 30))
+            .durationOfBooking(30)
+            .status(ReservationStatus.SCHEDULED)
+            .notes("Client prefers soft massage")
+            .salon(getSalonEntity())
+            .user(getUserEntity())
+            .treatment(getTreatmentEntity())
+            .build();
+  }
+
+  public List<WorkingHour> getWorkingHours() {
+    return List.of(
+            WorkingHour.builder()
+                    .dayOfWeek(DayOfWeek.MONDAY)
+                    .startTime(LocalTime.of(9, 0))
+                    .endTime(LocalTime.of(18, 0))
+                    .build(),
+            WorkingHour.builder()
+                    .dayOfWeek(DayOfWeek.TUESDAY)
+                    .startTime(LocalTime.of(9, 0))
+                    .endTime(LocalTime.of(18, 0))
+                    .build(),
+            WorkingHour.builder()
+                    .dayOfWeek(DayOfWeek.WEDNESDAY)
+                    .startTime(LocalTime.of(9, 0))
+                    .endTime(LocalTime.of(18, 0))
+                    .build(),
+            WorkingHour.builder()
+                    .dayOfWeek(DayOfWeek.THURSDAY)
+                    .startTime(LocalTime.of(9, 0))
+                    .endTime(LocalTime.of(18, 0))
+                    .build(),
+            WorkingHour.builder()
+                    .dayOfWeek(DayOfWeek.FRIDAY)
+                    .startTime(LocalTime.of(9, 0))
+                    .endTime(LocalTime.of(18, 0))
+                    .build(),
+            WorkingHour.builder()
+                    .dayOfWeek(DayOfWeek.SATURDAY)
+                    .startTime(LocalTime.of(9, 0))
+                    .endTime(LocalTime.of(16, 0))
+                    .build()
+    );
   }
 
 }

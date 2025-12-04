@@ -8,14 +8,50 @@ import {{import}};
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Data;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
+import jakarta.validation.Valid;
 
 {{#models}}
 {{#model}}
+{{#isEnum}}
+public enum {{classname}} {
+{{#allowableValues}}{{#enumVars}}
+    {{name}}("{{{name}}}"){{#-last}};{{/-last}}{{^-last}},{{/-last}}{{/enumVars}}{{/allowableValues}}
+
+    private final String value;
+
+    {{classname}}(String value) {
+        this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static {{classname}} fromValue(String input) {
+        for ({{classname}} b : {{classname}}.values()) {
+            if (b.value.equals(input)) {
+                return b;
+            }
+        }
+        throw new IllegalArgumentException("Unexpected value '" + input + "'");
+    }
+}
+{{/isEnum}}
+{{^isEnum}}
 @Data
 @Builder
 @NoArgsConstructor
@@ -32,11 +68,13 @@ public class {{classname}} {
     {{^minLength}}{{#maxLength}}
         @Size(max={{maxLength}})
     {{/maxLength}}{{/minLength}}
-     @JsonProperty("{{baseName}}")
-     {{#isDateTime}}private LocalDateTime {{name}};{{/isDateTime}}{{^isDateTime}}private {{datatype}} {{name}};{{/isDateTime}}
+    @JsonProperty("{{baseName}}")
+    {{#isDateTime}}private LocalDateTime {{name}};{{/isDateTime}}
+    {{^isDateTime}}private {{{datatype}}} {{name}};{{/isDateTime}}
 {{/vars}}
 
 
 }
+{{/isEnum}}
 {{/model}}
 {{/models}}

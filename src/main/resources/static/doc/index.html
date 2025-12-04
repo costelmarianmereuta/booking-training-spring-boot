@@ -940,6 +940,20 @@ ul.nav-tabs {
     },
     "address" : {
       "$ref" : "#/components/schemas/Address"
+    },
+    "openingHours" : {
+      "type" : "array",
+      "description" : "Weekly opening hours of the salon",
+      "items" : {
+        "$ref" : "#/components/schemas/WorkingHours"
+      }
+    },
+    "specialOpeningHours" : {
+      "type" : "array",
+      "description" : "Weekly opening hours of the salon",
+      "items" : {
+        "$ref" : "#/components/schemas/SpecialWorkingHours"
+      }
     }
   }
 };
@@ -979,6 +993,109 @@ ul.nav-tabs {
     }
   }
 };
+    defs["DayOfWeek"] = {
+  "type" : "string",
+  "description" : "days of the week for the schedule",
+  "enum" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY" ],
+  "x-java-type" : "java.time.DayOfWeek"
+};
+    defs["Reservation"] = {
+  "allOf" : [ {
+    "$ref" : "#/components/schemas/ReservationRequest"
+  }, {
+    "type" : "object",
+    "properties" : {
+      "publicId" : {
+        "type" : "string",
+        "example" : "r3a6e8e2-1b23-4f91-8e71-11aa22bb33cc"
+      },
+      "status" : {
+        "$ref" : "#/components/schemas/ReservationStatus"
+      },
+      "priceOfBooking" : {
+        "type" : "number",
+        "description" : "Price of the treatment at the time of booking",
+        "format" : "double",
+        "example" : 75.0
+      },
+      "durationOfBooking" : {
+        "type" : "integer",
+        "description" : "Duration in minutes at the time of booking",
+        "example" : 60
+      },
+      "endTime" : {
+        "type" : "string",
+        "format" : "date-time",
+        "readOnly" : true,
+        "example" : "2025-11-20T11:30:00Z"
+      },
+      "createdAt" : {
+        "type" : "string",
+        "format" : "date-time",
+        "readOnly" : true,
+        "example" : "2025-11-13T10:30:00Z"
+      },
+      "updatedAt" : {
+        "type" : "string",
+        "format" : "date-time",
+        "readOnly" : true,
+        "example" : "2025-11-13T11:00:00Z"
+      }
+    }
+  } ]
+};
+    defs["ReservationRequest"] = {
+  "required" : [ "salonPublicId", "startTime", "treatmentName", "userPublicId" ],
+  "type" : "object",
+  "properties" : {
+    "salonPublicId" : {
+      "type" : "string",
+      "example" : "b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3"
+    },
+    "userPublicId" : {
+      "type" : "string",
+      "example" : "u1a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3"
+    },
+    "treatmentName" : {
+      "type" : "string",
+      "example" : "Facial massage"
+    },
+    "startTime" : {
+      "type" : "string",
+      "format" : "date-time",
+      "example" : "2025-11-20T10:30:00Z"
+    },
+    "notes" : {
+      "maxLength" : 512,
+      "type" : "string",
+      "example" : "Client prefers a soft massage and has allergy to certain oils."
+    }
+  }
+};
+    defs["ReservationStatus"] = {
+  "type" : "string",
+  "description" : "Status of the reservation",
+  "enum" : [ "SCHEDULED", "CANCELLED", "COMPLETED" ]
+};
+    defs["ReservationUpdateRequest"] = {
+  "type" : "object",
+  "properties" : {
+    "treatmentName" : {
+      "type" : "string"
+    },
+    "startTime" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "notes" : {
+      "maxLength" : 512,
+      "type" : "string"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/ReservationStatus"
+    }
+  }
+};
     defs["Salon"] = {
   "allOf" : [ {
     "$ref" : "#/components/schemas/CreateSalonRequest"
@@ -992,9 +1109,46 @@ ul.nav-tabs {
       "createdAt" : {
         "type" : "string",
         "format" : "date-time"
+      },
+      "openingHours" : {
+        "type" : "array",
+        "description" : "Weekly opening hours of the salon",
+        "items" : {
+          "$ref" : "#/components/schemas/WorkingHours"
+        }
+      },
+      "specialOpeningHours" : {
+        "type" : "array",
+        "description" : "Weekly opening hours of the salon",
+        "items" : {
+          "$ref" : "#/components/schemas/SpecialWorkingHours"
+        }
       }
     }
   } ]
+};
+    defs["SpecialWorkingHours"] = {
+  "properties" : {
+    "closingDay" : {
+      "type" : "string",
+      "format" : "date",
+      "example" : "2025-12-25"
+    },
+    "startTime" : {
+      "type" : "string",
+      "format" : "time",
+      "example" : "09:00:00"
+    },
+    "endTime" : {
+      "type" : "string",
+      "format" : "time",
+      "example" : "18:00:00"
+    },
+    "closedAllDay" : {
+      "type" : "boolean",
+      "example" : false
+    }
+  }
 };
     defs["Treatment"] = {
   "allOf" : [ {
@@ -1061,6 +1215,20 @@ ul.nav-tabs {
     },
     "address" : {
       "$ref" : "#/components/schemas/Address"
+    },
+    "openingHours" : {
+      "type" : "array",
+      "description" : "Weekly opening hours of the salon",
+      "items" : {
+        "$ref" : "#/components/schemas/WorkingHours"
+      }
+    },
+    "specialOpeningHours" : {
+      "type" : "array",
+      "description" : "Weekly opening hours of the salon",
+      "items" : {
+        "$ref" : "#/components/schemas/SpecialWorkingHours"
+      }
     }
   }
 };
@@ -1112,9 +1280,42 @@ ul.nav-tabs {
         "type" : "string",
         "format" : "date-time",
         "example" : "2025-11-13T11:00:00Z"
+      },
+      "workingHours" : {
+        "type" : "array",
+        "description" : "Weekly opening hours of the salon",
+        "items" : {
+          "$ref" : "#/components/schemas/WorkingHours"
+        }
+      },
+      "specialWorkingHours" : {
+        "type" : "array",
+        "description" : "Weekly opening hours of the salon",
+        "items" : {
+          "$ref" : "#/components/schemas/SpecialWorkingHours"
+        }
       }
     }
   } ]
+};
+    defs["WorkingHours"] = {
+  "required" : [ "dayOfWeek", "endTime", "startTime" ],
+  "type" : "object",
+  "properties" : {
+    "dayOfWeek" : {
+      "$ref" : "#/components/schemas/DayOfWeek"
+    },
+    "startTime" : {
+      "type" : "string",
+      "format" : "time",
+      "example" : "09:00:00"
+    },
+    "endTime" : {
+      "type" : "string",
+      "format" : "time",
+      "example" : "18:00:00"
+    }
+  }
 };
 
     var errs = {};
@@ -1149,6 +1350,22 @@ ul.nav-tabs {
                     </li>
                     <li data-group="Categories" data-name="updateCategory" class="">
                       <a href="#api-Categories-updateCategory">updateCategory</a>
+                    </li>
+                  <li class="nav-header" data-group="Reservations"><a href="#api-Reservations">API Methods - Reservations</a></li>
+                    <li data-group="Reservations" data-name="createReservation" class="">
+                      <a href="#api-Reservations-createReservation">createReservation</a>
+                    </li>
+                    <li data-group="Reservations" data-name="deleteReservation" class="">
+                      <a href="#api-Reservations-deleteReservation">deleteReservation</a>
+                    </li>
+                    <li data-group="Reservations" data-name="getReservationById" class="">
+                      <a href="#api-Reservations-getReservationById">getReservationById</a>
+                    </li>
+                    <li data-group="Reservations" data-name="getReservations" class="">
+                      <a href="#api-Reservations-getReservations">getReservations</a>
+                    </li>
+                    <li data-group="Reservations" data-name="updateReservation" class="">
+                      <a href="#api-Reservations-updateReservation">updateReservation</a>
                     </li>
                   <li class="nav-header" data-group="Salons"><a href="#api-Salons">API Methods - Salons</a></li>
                     <li data-group="Salons" data-name="createSalon" class="">
@@ -3040,6 +3257,2033 @@ $(document).ready(function() {
                       </div>
                       <hr>
                   </section>
+                <section id="api-Reservations">
+                  <h1>Reservations</h1>
+                    <div id="api-Reservations-createReservation">
+                      <article id="api-Reservations-createReservation-0" data-group="User" data-name="createReservation" data-version="0">
+                        <div class="pull-left">
+                          <h1>createReservation</h1>
+                          <p>Create a reservation</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/v1/reservations</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Reservations-createReservation-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Reservations-createReservation-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Reservations-createReservation-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Reservations-createReservation-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Reservations-createReservation-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Reservations-createReservation-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Reservations-createReservation-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Reservations-createReservation-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Reservations-createReservation-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Reservations-createReservation-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Reservations-createReservation-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Reservations-createReservation-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Reservations-createReservation-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Reservations-createReservation-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST \
+ -H "Accept: application/json" \
+ -H "Content-Type: application/json" \
+ "http://localhost:8080/api/v1/reservations" \
+ -d '{
+  &quot;notes&quot; : &quot;Client prefers a soft massage and has allergy to certain oils.&quot;,
+  &quot;salonPublicId&quot; : &quot;b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3&quot;,
+  &quot;userPublicId&quot; : &quot;u1a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3&quot;,
+  &quot;startTime&quot; : &quot;2025-11-20T10:30:00Z&quot;,
+  &quot;treatmentName&quot; : &quot;Facial massage&quot;
+}'
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Reservations-createReservation-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.ReservationsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ReservationsApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        ReservationsApi apiInstance = new ReservationsApi();
+        ReservationRequest reservationRequest = ; // ReservationRequest | 
+
+        try {
+            Reservation result = apiInstance.createReservation(reservationRequest);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReservationsApi#createReservation");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Reservations-createReservation-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+final ReservationRequest reservationRequest = new ReservationRequest(); // ReservationRequest | 
+
+try {
+    final result = await api_instance.createReservation(reservationRequest);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->createReservation: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Reservations-createReservation-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.ReservationsApi;
+
+public class ReservationsApiExample {
+    public static void main(String[] args) {
+        ReservationsApi apiInstance = new ReservationsApi();
+        ReservationRequest reservationRequest = ; // ReservationRequest | 
+
+        try {
+            Reservation result = apiInstance.createReservation(reservationRequest);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReservationsApi#createReservation");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Reservations-createReservation-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Reservations-createReservation-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+ReservationsApi *apiInstance = [[ReservationsApi alloc] init];
+ReservationRequest *reservationRequest = ; // 
+
+// Create a reservation
+[apiInstance createReservationWith:reservationRequest
+              completionHandler: ^(Reservation output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-createReservation-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var SalonBookingApi = require('salon_booking_api');
+
+// Create an instance of the API class
+var api = new SalonBookingApi.ReservationsApi()
+var reservationRequest = ; // {ReservationRequest} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.createReservation(reservationRequest, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Reservations-createReservation-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Reservations-createReservation-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class createReservationExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new ReservationsApi();
+            var reservationRequest = new ReservationRequest(); // ReservationRequest | 
+
+            try {
+                // Create a reservation
+                Reservation result = apiInstance.createReservation(reservationRequest);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling ReservationsApi.createReservation: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-createReservation-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\ReservationsApi();
+$reservationRequest = ; // ReservationRequest | 
+
+try {
+    $result = $api_instance->createReservation($reservationRequest);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ReservationsApi->createReservation: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-createReservation-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::ReservationsApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::ReservationsApi->new();
+my $reservationRequest = WWW::OPenAPIClient::Object::ReservationRequest->new(); # ReservationRequest | 
+
+eval {
+    my $result = $api_instance->createReservation(reservationRequest => $reservationRequest);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling ReservationsApi->createReservation: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-createReservation-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.ReservationsApi()
+reservationRequest =  # ReservationRequest | 
+
+try:
+    # Create a reservation
+    api_response = api_instance.create_reservation(reservationRequest)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling ReservationsApi->createReservation: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-createReservation-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate ReservationsApi;
+
+pub fn main() {
+    let reservationRequest = ; // ReservationRequest
+
+    let mut context = ReservationsApi::Context::default();
+    let result = client.createReservation(reservationRequest, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">reservationRequest <span style="color:red;">*</span></td>
+<td>
+<p class="marked"></p>
+<script>
+$(document).ready(function() {
+  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ReservationRequest"
+      }
+    }
+  },
+  "required" : true
+};
+
+  var schema = findNode('schema',schemaWrapper).schema;
+  if (!schema) {
+    schema = schemaWrapper.schema;
+  }
+  if (schema.$ref != null) {
+    schema = defsParser.$refs.get(schema.$ref);
+  } else {
+    schemaWrapper.definitions = Object.assign({}, defs);
+    $RefParser.dereference(schemaWrapper).catch(function(err) {
+      console.log(err);
+    });
+  }
+
+  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+  var result = $('#d2e199_createReservation_reservationRequest');
+  result.empty();
+  result.append(view.render());
+});
+</script>
+<div id="d2e199_createReservation_reservationRequest"></div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Reservations-createReservation-title-201"></h3>
+                            <p id="examples-Reservations-createReservation-description-201" class="marked"></p>
+                            <script>
+                              var responseReservations201_description = `Reservation created`;
+                              var responseReservations201_description_break = responseReservations201_description.indexOf('\n');
+                              if (responseReservations201_description_break == -1) {
+                                $("#examples-Reservations-createReservation-title-201").text("Status: 201 - " + responseReservations201_description);
+                              } else {
+                                $("#examples-Reservations-createReservation-title-201").text("Status: 201 - " + responseReservations201_description.substring(0, responseReservations201_description_break));
+                                $("#examples-Reservations-createReservation-description-201").html(responseReservations201_description.substring(responseReservations201_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Reservations-createReservation-201" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Reservations-createReservation-201-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Reservations-createReservation-201-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Reservations-createReservation-201-schema">
+                                  <div id="responses-Reservations-createReservation-schema-201" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = ;
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Reservations-createReservation-201-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Reservations-createReservation-schema-201');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Reservations-createReservation-201-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Reservations-createReservation-title-400"></h3>
+                            <p id="examples-Reservations-createReservation-description-400" class="marked"></p>
+                            <script>
+                              var responseReservations400_description = `Données invalides`;
+                              var responseReservations400_description_break = responseReservations400_description.indexOf('\n');
+                              if (responseReservations400_description_break == -1) {
+                                $("#examples-Reservations-createReservation-title-400").text("Status: 400 - " + responseReservations400_description);
+                              } else {
+                                $("#examples-Reservations-createReservation-title-400").text("Status: 400 - " + responseReservations400_description.substring(0, responseReservations400_description_break));
+                                $("#examples-Reservations-createReservation-description-400").html(responseReservations400_description.substring(responseReservations400_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Reservations-createReservation-400" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Reservations-createReservation-400-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                            <h3 id="examples-Reservations-createReservation-title-404"></h3>
+                            <p id="examples-Reservations-createReservation-description-404" class="marked"></p>
+                            <script>
+                              var responseReservations404_description = `Ressource introuvable`;
+                              var responseReservations404_description_break = responseReservations404_description.indexOf('\n');
+                              if (responseReservations404_description_break == -1) {
+                                $("#examples-Reservations-createReservation-title-404").text("Status: 404 - " + responseReservations404_description);
+                              } else {
+                                $("#examples-Reservations-createReservation-title-404").text("Status: 404 - " + responseReservations404_description.substring(0, responseReservations404_description_break));
+                                $("#examples-Reservations-createReservation-description-404").html(responseReservations404_description.substring(responseReservations404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Reservations-createReservation-404" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Reservations-createReservation-404-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Reservations-deleteReservation">
+                      <article id="api-Reservations-deleteReservation-0" data-group="User" data-name="deleteReservation" data-version="0">
+                        <div class="pull-left">
+                          <h1>deleteReservation</h1>
+                          <p>Delete a reservation</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/api/v1/reservations/{publicId}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Reservations-deleteReservation-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Reservations-deleteReservation-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Reservations-deleteReservation-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Reservations-deleteReservation-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Reservations-deleteReservation-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Reservations-deleteReservation-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Reservations-deleteReservation-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Reservations-deleteReservation-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Reservations-deleteReservation-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Reservations-deleteReservation-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Reservations-deleteReservation-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Reservations-deleteReservation-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Reservations-deleteReservation-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Reservations-deleteReservation-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE \
+ "http://localhost:8080/api/v1/reservations/{publicId}"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Reservations-deleteReservation-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.ReservationsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ReservationsApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        ReservationsApi apiInstance = new ReservationsApi();
+        String publicId = publicId_example; // String | 
+
+        try {
+            apiInstance.deleteReservation(publicId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReservationsApi#deleteReservation");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Reservations-deleteReservation-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+final String publicId = new String(); // String | 
+
+try {
+    final result = await api_instance.deleteReservation(publicId);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->deleteReservation: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Reservations-deleteReservation-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.ReservationsApi;
+
+public class ReservationsApiExample {
+    public static void main(String[] args) {
+        ReservationsApi apiInstance = new ReservationsApi();
+        String publicId = publicId_example; // String | 
+
+        try {
+            apiInstance.deleteReservation(publicId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReservationsApi#deleteReservation");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Reservations-deleteReservation-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Reservations-deleteReservation-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+ReservationsApi *apiInstance = [[ReservationsApi alloc] init];
+String *publicId = publicId_example; //  (default to null)
+
+// Delete a reservation
+[apiInstance deleteReservationWith:publicId
+              completionHandler: ^(NSError* error) {
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-deleteReservation-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var SalonBookingApi = require('salon_booking_api');
+
+// Create an instance of the API class
+var api = new SalonBookingApi.ReservationsApi()
+var publicId = publicId_example; // {String} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.deleteReservation(publicId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Reservations-deleteReservation-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Reservations-deleteReservation-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class deleteReservationExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new ReservationsApi();
+            var publicId = publicId_example;  // String |  (default to null)
+
+            try {
+                // Delete a reservation
+                apiInstance.deleteReservation(publicId);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling ReservationsApi.deleteReservation: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-deleteReservation-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\ReservationsApi();
+$publicId = publicId_example; // String | 
+
+try {
+    $api_instance->deleteReservation($publicId);
+} catch (Exception $e) {
+    echo 'Exception when calling ReservationsApi->deleteReservation: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-deleteReservation-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::ReservationsApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::ReservationsApi->new();
+my $publicId = publicId_example; # String | 
+
+eval {
+    $api_instance->deleteReservation(publicId => $publicId);
+};
+if ($@) {
+    warn "Exception when calling ReservationsApi->deleteReservation: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-deleteReservation-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.ReservationsApi()
+publicId = publicId_example # String |  (default to null)
+
+try:
+    # Delete a reservation
+    api_instance.delete_reservation(publicId)
+except ApiException as e:
+    print("Exception when calling ReservationsApi->deleteReservation: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-deleteReservation-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate ReservationsApi;
+
+pub fn main() {
+    let publicId = publicId_example; // String
+
+    let mut context = ReservationsApi::Context::default();
+    let result = client.deleteReservation(publicId, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">publicId*</td>
+<td>
+
+
+    <div id="d2e199_deleteReservation_publicId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Reservations-deleteReservation-title-204"></h3>
+                            <p id="examples-Reservations-deleteReservation-description-204" class="marked"></p>
+                            <script>
+                              var responseReservations204_description = `Deleted successfully`;
+                              var responseReservations204_description_break = responseReservations204_description.indexOf('\n');
+                              if (responseReservations204_description_break == -1) {
+                                $("#examples-Reservations-deleteReservation-title-204").text("Status: 204 - " + responseReservations204_description);
+                              } else {
+                                $("#examples-Reservations-deleteReservation-title-204").text("Status: 204 - " + responseReservations204_description.substring(0, responseReservations204_description_break));
+                                $("#examples-Reservations-deleteReservation-description-204").html(responseReservations204_description.substring(responseReservations204_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Reservations-deleteReservation-204" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Reservations-deleteReservation-204-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                            <h3 id="examples-Reservations-deleteReservation-title-404"></h3>
+                            <p id="examples-Reservations-deleteReservation-description-404" class="marked"></p>
+                            <script>
+                              var responseReservations404_description = `Ressource introuvable`;
+                              var responseReservations404_description_break = responseReservations404_description.indexOf('\n');
+                              if (responseReservations404_description_break == -1) {
+                                $("#examples-Reservations-deleteReservation-title-404").text("Status: 404 - " + responseReservations404_description);
+                              } else {
+                                $("#examples-Reservations-deleteReservation-title-404").text("Status: 404 - " + responseReservations404_description.substring(0, responseReservations404_description_break));
+                                $("#examples-Reservations-deleteReservation-description-404").html(responseReservations404_description.substring(responseReservations404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Reservations-deleteReservation-404" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Reservations-deleteReservation-404-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Reservations-getReservationById">
+                      <article id="api-Reservations-getReservationById-0" data-group="User" data-name="getReservationById" data-version="0">
+                        <div class="pull-left">
+                          <h1>getReservationById</h1>
+                          <p>Get a reservation by publicId</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/v1/reservations/{publicId}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Reservations-getReservationById-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservationById-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservationById-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservationById-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Reservations-getReservationById-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Reservations-getReservationById-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservationById-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Reservations-getReservationById-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Reservations-getReservationById-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservationById-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservationById-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservationById-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservationById-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Reservations-getReservationById-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
+ -H "Accept: application/json" \
+ "http://localhost:8080/api/v1/reservations/{publicId}"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Reservations-getReservationById-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.ReservationsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ReservationsApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        ReservationsApi apiInstance = new ReservationsApi();
+        String publicId = publicId_example; // String | 
+
+        try {
+            Reservation result = apiInstance.getReservationById(publicId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReservationsApi#getReservationById");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Reservations-getReservationById-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+final String publicId = new String(); // String | 
+
+try {
+    final result = await api_instance.getReservationById(publicId);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->getReservationById: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Reservations-getReservationById-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.ReservationsApi;
+
+public class ReservationsApiExample {
+    public static void main(String[] args) {
+        ReservationsApi apiInstance = new ReservationsApi();
+        String publicId = publicId_example; // String | 
+
+        try {
+            Reservation result = apiInstance.getReservationById(publicId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReservationsApi#getReservationById");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Reservations-getReservationById-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Reservations-getReservationById-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+ReservationsApi *apiInstance = [[ReservationsApi alloc] init];
+String *publicId = publicId_example; //  (default to null)
+
+// Get a reservation by publicId
+[apiInstance getReservationByIdWith:publicId
+              completionHandler: ^(Reservation output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-getReservationById-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var SalonBookingApi = require('salon_booking_api');
+
+// Create an instance of the API class
+var api = new SalonBookingApi.ReservationsApi()
+var publicId = publicId_example; // {String} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getReservationById(publicId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Reservations-getReservationById-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Reservations-getReservationById-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getReservationByIdExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new ReservationsApi();
+            var publicId = publicId_example;  // String |  (default to null)
+
+            try {
+                // Get a reservation by publicId
+                Reservation result = apiInstance.getReservationById(publicId);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling ReservationsApi.getReservationById: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-getReservationById-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\ReservationsApi();
+$publicId = publicId_example; // String | 
+
+try {
+    $result = $api_instance->getReservationById($publicId);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ReservationsApi->getReservationById: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-getReservationById-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::ReservationsApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::ReservationsApi->new();
+my $publicId = publicId_example; # String | 
+
+eval {
+    my $result = $api_instance->getReservationById(publicId => $publicId);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling ReservationsApi->getReservationById: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-getReservationById-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.ReservationsApi()
+publicId = publicId_example # String |  (default to null)
+
+try:
+    # Get a reservation by publicId
+    api_response = api_instance.get_reservation_by_id(publicId)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling ReservationsApi->getReservationById: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-getReservationById-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate ReservationsApi;
+
+pub fn main() {
+    let publicId = publicId_example; // String
+
+    let mut context = ReservationsApi::Context::default();
+    let result = client.getReservationById(publicId, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">publicId*</td>
+<td>
+
+
+    <div id="d2e199_getReservationById_publicId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Reservations-getReservationById-title-200"></h3>
+                            <p id="examples-Reservations-getReservationById-description-200" class="marked"></p>
+                            <script>
+                              var responseReservations200_description = `Reservation found`;
+                              var responseReservations200_description_break = responseReservations200_description.indexOf('\n');
+                              if (responseReservations200_description_break == -1) {
+                                $("#examples-Reservations-getReservationById-title-200").text("Status: 200 - " + responseReservations200_description);
+                              } else {
+                                $("#examples-Reservations-getReservationById-title-200").text("Status: 200 - " + responseReservations200_description.substring(0, responseReservations200_description_break));
+                                $("#examples-Reservations-getReservationById-description-200").html(responseReservations200_description.substring(responseReservations200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Reservations-getReservationById-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Reservations-getReservationById-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Reservations-getReservationById-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Reservations-getReservationById-200-schema">
+                                  <div id="responses-Reservations-getReservationById-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = ;
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Reservations-getReservationById-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Reservations-getReservationById-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Reservations-getReservationById-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Reservations-getReservationById-title-404"></h3>
+                            <p id="examples-Reservations-getReservationById-description-404" class="marked"></p>
+                            <script>
+                              var responseReservations404_description = `Ressource introuvable`;
+                              var responseReservations404_description_break = responseReservations404_description.indexOf('\n');
+                              if (responseReservations404_description_break == -1) {
+                                $("#examples-Reservations-getReservationById-title-404").text("Status: 404 - " + responseReservations404_description);
+                              } else {
+                                $("#examples-Reservations-getReservationById-title-404").text("Status: 404 - " + responseReservations404_description.substring(0, responseReservations404_description_break));
+                                $("#examples-Reservations-getReservationById-description-404").html(responseReservations404_description.substring(responseReservations404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Reservations-getReservationById-404" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Reservations-getReservationById-404-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Reservations-getReservations">
+                      <article id="api-Reservations-getReservations-0" data-group="User" data-name="getReservations" data-version="0">
+                        <div class="pull-left">
+                          <h1>getReservations</h1>
+                          <p>Get all reservations (optionally filtered)</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/v1/reservations</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Reservations-getReservations-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservations-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservations-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservations-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Reservations-getReservations-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Reservations-getReservations-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservations-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Reservations-getReservations-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Reservations-getReservations-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservations-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservations-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservations-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Reservations-getReservations-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Reservations-getReservations-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
+ -H "Accept: application/json" \
+ "http://localhost:8080/api/v1/reservations?salonPublicId=salonPublicId_example&userPublicId=userPublicId_example&treatmentName=treatmentName_example&date=2013-10-20&status="
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Reservations-getReservations-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.ReservationsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ReservationsApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        ReservationsApi apiInstance = new ReservationsApi();
+        String salonPublicId = salonPublicId_example; // String | 
+        String userPublicId = userPublicId_example; // String | 
+        String treatmentName = treatmentName_example; // String | 
+        date date = 2013-10-20; // date | 
+        ReservationStatus status = ; // ReservationStatus | 
+
+        try {
+            array[Reservation] result = apiInstance.getReservations(salonPublicId, userPublicId, treatmentName, date, status);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReservationsApi#getReservations");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Reservations-getReservations-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+final String salonPublicId = new String(); // String | 
+final String userPublicId = new String(); // String | 
+final String treatmentName = new String(); // String | 
+final date date = new date(); // date | 
+final ReservationStatus status = new ReservationStatus(); // ReservationStatus | 
+
+try {
+    final result = await api_instance.getReservations(salonPublicId, userPublicId, treatmentName, date, status);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->getReservations: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Reservations-getReservations-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.ReservationsApi;
+
+public class ReservationsApiExample {
+    public static void main(String[] args) {
+        ReservationsApi apiInstance = new ReservationsApi();
+        String salonPublicId = salonPublicId_example; // String | 
+        String userPublicId = userPublicId_example; // String | 
+        String treatmentName = treatmentName_example; // String | 
+        date date = 2013-10-20; // date | 
+        ReservationStatus status = ; // ReservationStatus | 
+
+        try {
+            array[Reservation] result = apiInstance.getReservations(salonPublicId, userPublicId, treatmentName, date, status);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReservationsApi#getReservations");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Reservations-getReservations-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Reservations-getReservations-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+ReservationsApi *apiInstance = [[ReservationsApi alloc] init];
+String *salonPublicId = salonPublicId_example; //  (optional) (default to null)
+String *userPublicId = userPublicId_example; //  (optional) (default to null)
+String *treatmentName = treatmentName_example; //  (optional) (default to null)
+date *date = 2013-10-20; //  (optional) (default to null)
+ReservationStatus *status = ; //  (optional) (default to null)
+
+// Get all reservations (optionally filtered)
+[apiInstance getReservationsWith:salonPublicId
+    userPublicId:userPublicId
+    treatmentName:treatmentName
+    date:date
+    status:status
+              completionHandler: ^(array[Reservation] output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-getReservations-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var SalonBookingApi = require('salon_booking_api');
+
+// Create an instance of the API class
+var api = new SalonBookingApi.ReservationsApi()
+var opts = {
+  'salonPublicId': salonPublicId_example, // {String} 
+  'userPublicId': userPublicId_example, // {String} 
+  'treatmentName': treatmentName_example, // {String} 
+  'date': 2013-10-20, // {date} 
+  'status':  // {ReservationStatus} 
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getReservations(opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Reservations-getReservations-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Reservations-getReservations-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getReservationsExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new ReservationsApi();
+            var salonPublicId = salonPublicId_example;  // String |  (optional)  (default to null)
+            var userPublicId = userPublicId_example;  // String |  (optional)  (default to null)
+            var treatmentName = treatmentName_example;  // String |  (optional)  (default to null)
+            var date = 2013-10-20;  // date |  (optional)  (default to null)
+            var status = new ReservationStatus(); // ReservationStatus |  (optional)  (default to null)
+
+            try {
+                // Get all reservations (optionally filtered)
+                array[Reservation] result = apiInstance.getReservations(salonPublicId, userPublicId, treatmentName, date, status);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling ReservationsApi.getReservations: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-getReservations-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\ReservationsApi();
+$salonPublicId = salonPublicId_example; // String | 
+$userPublicId = userPublicId_example; // String | 
+$treatmentName = treatmentName_example; // String | 
+$date = 2013-10-20; // date | 
+$status = ; // ReservationStatus | 
+
+try {
+    $result = $api_instance->getReservations($salonPublicId, $userPublicId, $treatmentName, $date, $status);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ReservationsApi->getReservations: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-getReservations-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::ReservationsApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::ReservationsApi->new();
+my $salonPublicId = salonPublicId_example; # String | 
+my $userPublicId = userPublicId_example; # String | 
+my $treatmentName = treatmentName_example; # String | 
+my $date = 2013-10-20; # date | 
+my $status = ; # ReservationStatus | 
+
+eval {
+    my $result = $api_instance->getReservations(salonPublicId => $salonPublicId, userPublicId => $userPublicId, treatmentName => $treatmentName, date => $date, status => $status);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling ReservationsApi->getReservations: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-getReservations-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.ReservationsApi()
+salonPublicId = salonPublicId_example # String |  (optional) (default to null)
+userPublicId = userPublicId_example # String |  (optional) (default to null)
+treatmentName = treatmentName_example # String |  (optional) (default to null)
+date = 2013-10-20 # date |  (optional) (default to null)
+status =  # ReservationStatus |  (optional) (default to null)
+
+try:
+    # Get all reservations (optionally filtered)
+    api_response = api_instance.get_reservations(salonPublicId=salonPublicId, userPublicId=userPublicId, treatmentName=treatmentName, date=date, status=status)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling ReservationsApi->getReservations: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-getReservations-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate ReservationsApi;
+
+pub fn main() {
+    let salonPublicId = salonPublicId_example; // String
+    let userPublicId = userPublicId_example; // String
+    let treatmentName = treatmentName_example; // String
+    let date = 2013-10-20; // date
+    let status = ; // ReservationStatus
+
+    let mut context = ReservationsApi::Context::default();
+    let result = client.getReservations(salonPublicId, userPublicId, treatmentName, date, status, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">salonPublicId</td>
+<td>
+
+
+    <div id="d2e199_getReservations_salonPublicId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">userPublicId</td>
+<td>
+
+
+    <div id="d2e199_getReservations_userPublicId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">treatmentName</td>
+<td>
+
+
+    <div id="d2e199_getReservations_treatmentName">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">date</td>
+<td>
+
+
+    <div id="d2e199_getReservations_date">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    date
+                </span>
+                    <span class="format">
+                        (date)
+                    </span>
+
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">status</td>
+<td>
+
+
+    <div id="d2e199_getReservations_status">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    ReservationStatus
+                </span>
+
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Reservations-getReservations-title-200"></h3>
+                            <p id="examples-Reservations-getReservations-description-200" class="marked"></p>
+                            <script>
+                              var responseReservations200_description = `List of reservations`;
+                              var responseReservations200_description_break = responseReservations200_description.indexOf('\n');
+                              if (responseReservations200_description_break == -1) {
+                                $("#examples-Reservations-getReservations-title-200").text("Status: 200 - " + responseReservations200_description);
+                              } else {
+                                $("#examples-Reservations-getReservations-title-200").text("Status: 200 - " + responseReservations200_description.substring(0, responseReservations200_description_break));
+                                $("#examples-Reservations-getReservations-description-200").html(responseReservations200_description.substring(responseReservations200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Reservations-getReservations-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Reservations-getReservations-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Reservations-getReservations-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Reservations-getReservations-200-schema">
+                                  <div id="responses-Reservations-getReservations-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = ;
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Reservations-getReservations-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Reservations-getReservations-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Reservations-getReservations-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Reservations-updateReservation">
+                      <article id="api-Reservations-updateReservation-0" data-group="User" data-name="updateReservation" data-version="0">
+                        <div class="pull-left">
+                          <h1>updateReservation</h1>
+                          <p>Update a reservation</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/api/v1/reservations/{publicId}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Reservations-updateReservation-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Reservations-updateReservation-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Reservations-updateReservation-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Reservations-updateReservation-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Reservations-updateReservation-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Reservations-updateReservation-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Reservations-updateReservation-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Reservations-updateReservation-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Reservations-updateReservation-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Reservations-updateReservation-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Reservations-updateReservation-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Reservations-updateReservation-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Reservations-updateReservation-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Reservations-updateReservation-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT \
+ -H "Accept: application/json" \
+ -H "Content-Type: application/json" \
+ "http://localhost:8080/api/v1/reservations/{publicId}" \
+ -d '{
+  &quot;notes&quot; : &quot;notes&quot;,
+  &quot;startTime&quot; : &quot;2000-01-23T04:56:07.000+00:00&quot;,
+  &quot;treatmentName&quot; : &quot;treatmentName&quot;
+}'
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Reservations-updateReservation-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.ReservationsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ReservationsApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        ReservationsApi apiInstance = new ReservationsApi();
+        String publicId = publicId_example; // String | 
+        ReservationUpdateRequest reservationUpdateRequest = ; // ReservationUpdateRequest | 
+
+        try {
+            Reservation result = apiInstance.updateReservation(publicId, reservationUpdateRequest);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReservationsApi#updateReservation");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Reservations-updateReservation-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+final String publicId = new String(); // String | 
+final ReservationUpdateRequest reservationUpdateRequest = new ReservationUpdateRequest(); // ReservationUpdateRequest | 
+
+try {
+    final result = await api_instance.updateReservation(publicId, reservationUpdateRequest);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->updateReservation: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Reservations-updateReservation-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.ReservationsApi;
+
+public class ReservationsApiExample {
+    public static void main(String[] args) {
+        ReservationsApi apiInstance = new ReservationsApi();
+        String publicId = publicId_example; // String | 
+        ReservationUpdateRequest reservationUpdateRequest = ; // ReservationUpdateRequest | 
+
+        try {
+            Reservation result = apiInstance.updateReservation(publicId, reservationUpdateRequest);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReservationsApi#updateReservation");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Reservations-updateReservation-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Reservations-updateReservation-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+ReservationsApi *apiInstance = [[ReservationsApi alloc] init];
+String *publicId = publicId_example; //  (default to null)
+ReservationUpdateRequest *reservationUpdateRequest = ; // 
+
+// Update a reservation
+[apiInstance updateReservationWith:publicId
+    reservationUpdateRequest:reservationUpdateRequest
+              completionHandler: ^(Reservation output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-updateReservation-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var SalonBookingApi = require('salon_booking_api');
+
+// Create an instance of the API class
+var api = new SalonBookingApi.ReservationsApi()
+var publicId = publicId_example; // {String} 
+var reservationUpdateRequest = ; // {ReservationUpdateRequest} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.updateReservation(publicId, reservationUpdateRequest, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Reservations-updateReservation-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Reservations-updateReservation-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class updateReservationExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new ReservationsApi();
+            var publicId = publicId_example;  // String |  (default to null)
+            var reservationUpdateRequest = new ReservationUpdateRequest(); // ReservationUpdateRequest | 
+
+            try {
+                // Update a reservation
+                Reservation result = apiInstance.updateReservation(publicId, reservationUpdateRequest);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling ReservationsApi.updateReservation: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-updateReservation-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\ReservationsApi();
+$publicId = publicId_example; // String | 
+$reservationUpdateRequest = ; // ReservationUpdateRequest | 
+
+try {
+    $result = $api_instance->updateReservation($publicId, $reservationUpdateRequest);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ReservationsApi->updateReservation: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-updateReservation-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::ReservationsApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::ReservationsApi->new();
+my $publicId = publicId_example; # String | 
+my $reservationUpdateRequest = WWW::OPenAPIClient::Object::ReservationUpdateRequest->new(); # ReservationUpdateRequest | 
+
+eval {
+    my $result = $api_instance->updateReservation(publicId => $publicId, reservationUpdateRequest => $reservationUpdateRequest);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling ReservationsApi->updateReservation: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-updateReservation-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.ReservationsApi()
+publicId = publicId_example # String |  (default to null)
+reservationUpdateRequest =  # ReservationUpdateRequest | 
+
+try:
+    # Update a reservation
+    api_response = api_instance.update_reservation(publicId, reservationUpdateRequest)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling ReservationsApi->updateReservation: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Reservations-updateReservation-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate ReservationsApi;
+
+pub fn main() {
+    let publicId = publicId_example; // String
+    let reservationUpdateRequest = ; // ReservationUpdateRequest
+
+    let mut context = ReservationsApi::Context::default();
+    let result = client.updateReservation(publicId, reservationUpdateRequest, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">publicId*</td>
+<td>
+
+
+    <div id="d2e199_updateReservation_publicId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">reservationUpdateRequest <span style="color:red;">*</span></td>
+<td>
+<p class="marked"></p>
+<script>
+$(document).ready(function() {
+  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ReservationUpdateRequest"
+      }
+    }
+  },
+  "required" : true
+};
+
+  var schema = findNode('schema',schemaWrapper).schema;
+  if (!schema) {
+    schema = schemaWrapper.schema;
+  }
+  if (schema.$ref != null) {
+    schema = defsParser.$refs.get(schema.$ref);
+  } else {
+    schemaWrapper.definitions = Object.assign({}, defs);
+    $RefParser.dereference(schemaWrapper).catch(function(err) {
+      console.log(err);
+    });
+  }
+
+  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+  var result = $('#d2e199_updateReservation_reservationUpdateRequest');
+  result.empty();
+  result.append(view.render());
+});
+</script>
+<div id="d2e199_updateReservation_reservationUpdateRequest"></div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Reservations-updateReservation-title-200"></h3>
+                            <p id="examples-Reservations-updateReservation-description-200" class="marked"></p>
+                            <script>
+                              var responseReservations200_description = `Reservation updated`;
+                              var responseReservations200_description_break = responseReservations200_description.indexOf('\n');
+                              if (responseReservations200_description_break == -1) {
+                                $("#examples-Reservations-updateReservation-title-200").text("Status: 200 - " + responseReservations200_description);
+                              } else {
+                                $("#examples-Reservations-updateReservation-title-200").text("Status: 200 - " + responseReservations200_description.substring(0, responseReservations200_description_break));
+                                $("#examples-Reservations-updateReservation-description-200").html(responseReservations200_description.substring(responseReservations200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Reservations-updateReservation-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Reservations-updateReservation-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Reservations-updateReservation-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Reservations-updateReservation-200-schema">
+                                  <div id="responses-Reservations-updateReservation-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = ;
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Reservations-updateReservation-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Reservations-updateReservation-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Reservations-updateReservation-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Reservations-updateReservation-title-404"></h3>
+                            <p id="examples-Reservations-updateReservation-description-404" class="marked"></p>
+                            <script>
+                              var responseReservations404_description = `Ressource introuvable`;
+                              var responseReservations404_description_break = responseReservations404_description.indexOf('\n');
+                              if (responseReservations404_description_break == -1) {
+                                $("#examples-Reservations-updateReservation-title-404").text("Status: 404 - " + responseReservations404_description);
+                              } else {
+                                $("#examples-Reservations-updateReservation-title-404").text("Status: 404 - " + responseReservations404_description.substring(0, responseReservations404_description_break));
+                                $("#examples-Reservations-updateReservation-description-404").html(responseReservations404_description.substring(responseReservations404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Reservations-updateReservation-404" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Reservations-updateReservation-404-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
                 <section id="api-Salons">
                   <h1>Salons</h1>
                     <div id="api-Salons-createSalon">
@@ -3081,6 +5325,17 @@ $(document).ready(function() {
  -H "Content-Type: application/json" \
  "http://localhost:8080/api/v1/salons" \
  -d '{
+  &quot;specialOpeningHours&quot; : [ {
+    &quot;closingDay&quot; : &quot;2025-12-25T00:00:00.000+00:00&quot;,
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;,
+    &quot;closedAllDay&quot; : false
+  }, {
+    &quot;closingDay&quot; : &quot;2025-12-25T00:00:00.000+00:00&quot;,
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;,
+    &quot;closedAllDay&quot; : false
+  } ],
   &quot;address&quot; : {
     &quot;city&quot; : &quot;Bruxelles&quot;,
     &quot;street&quot; : &quot;Rue de Paris&quot;,
@@ -3088,7 +5343,14 @@ $(document).ready(function() {
     &quot;postcode&quot; : &quot;1000&quot;,
     &quot;postalBox&quot; : &quot;Boîte 3&quot;
   },
-  &quot;name&quot; : &quot;name&quot;
+  &quot;name&quot; : &quot;name&quot;,
+  &quot;openingHours&quot; : [ {
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;
+  }, {
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;
+  } ]
 }'
 </code></pre>
                           </div>
@@ -4519,6 +6781,17 @@ pub fn main() {
  -H "Content-Type: application/json" \
  "http://localhost:8080/api/v1/salons/{publicId}" \
  -d '{
+  &quot;specialOpeningHours&quot; : [ {
+    &quot;closingDay&quot; : &quot;2025-12-25T00:00:00.000+00:00&quot;,
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;,
+    &quot;closedAllDay&quot; : false
+  }, {
+    &quot;closingDay&quot; : &quot;2025-12-25T00:00:00.000+00:00&quot;,
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;,
+    &quot;closedAllDay&quot; : false
+  } ],
   &quot;address&quot; : {
     &quot;city&quot; : &quot;Bruxelles&quot;,
     &quot;street&quot; : &quot;Rue de Paris&quot;,
@@ -4526,7 +6799,14 @@ pub fn main() {
     &quot;postcode&quot; : &quot;1000&quot;,
     &quot;postalBox&quot; : &quot;Boîte 3&quot;
   },
-  &quot;name&quot; : &quot;name&quot;
+  &quot;name&quot; : &quot;name&quot;,
+  &quot;openingHours&quot; : [ {
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;
+  }, {
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;
+  } ]
 }'
 </code></pre>
                           </div>

@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class ConflictException extends DomainException {
-  protected ConflictException(String message) {
-    super(message, "CONFLICT");
+  public ConflictException(String message) {
+    super("CONFLICT", message);
   }
 }

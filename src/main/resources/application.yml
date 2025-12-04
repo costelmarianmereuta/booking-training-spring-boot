@@ -35,6 +35,12 @@ spring:
     properties:
       hibernate.jdbc.time_zone: UTC
     show-sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
   flyway:
     enabled: true
 

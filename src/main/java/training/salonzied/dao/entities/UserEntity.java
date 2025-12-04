@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -40,5 +41,15 @@ public class UserEntity {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+   @Column
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReservationEntity> reservations;
     //todo add password after
+    @ElementCollection
+    @CollectionTable(
+            name = "salon_opening_hours",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<WorkingHour> workingHours;
 }

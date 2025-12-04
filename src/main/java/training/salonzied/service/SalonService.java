@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.salonized.dto.SpecialWorkingHours;
 import com.salonized.dto.UpdateSalonRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -13,8 +14,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import training.salonzied.dao.entities.SalonEntity;
+import training.salonzied.dao.entities.SpecialOpeningHours;
 import training.salonzied.dao.repo.SalonRepository;
+import training.salonzied.error.BusinessRuleException;
 import training.salonzied.error.EntityNotFoundException;
+import training.salonzied.error.InvalidSpecialOpeningHoursException;
 import training.salonzied.mapper.SalonMapper;
 
 @Service
@@ -26,6 +30,11 @@ public class SalonService {
 
   @Transactional
   public Salon createSalon(CreateSalonRequest request) {
+
+    if (request.getSpecialOpeningHours() != null) {
+      request.getSpecialOpeningHours()
+              .forEach(this::validateSpecialOpeningHours);
+    }
 
     SalonEntity entity = salonMapper.toEntity(request);
     salonRepository.save(entity);
@@ -78,4 +87,20 @@ public class SalonService {
     salonEntity.getAddress().setPostalBox(request.getAddress().getPostalBox());
     salonEntity.getAddress().setPostcode(request.getAddress().getPostcode());
   }
+
+  private void validateSpecialOpeningHours(SpecialWorkingHours s) {
+    if (s.getClosedAllDay()) {
+      if (s.getStartTime() != null || s.getEndTime() != null) {
+        throw new InvalidSpecialOpeningHoursException("If closedAllDay is true, startTime and endTime must be null");
+      }
+    } else {
+      if (s.getStartTime() == null || s.getEndTime() == null) {
+        throw new InvalidSpecialOpeningHoursException("startTime and endTime are required when closedAllDay is false");
+      }
+      if (!s.getStartTime().isBefore(s.getEndTime())) {
+        throw new InvalidSpecialOpeningHoursException("startTime must be before endTime");
+      }
+    }
+  }
+
 }

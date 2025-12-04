@@ -193,6 +193,15 @@
                                 <dateLibrary>java8-localdatetime</dateLibrary>
                             </additionalProperties>
 
+                            <typeMappings>
+                                <!-- format: time => java.time.LocalTime -->
+                                <typeMapping>time=LocalTime</typeMapping>
+                            </typeMappings>
+                            
+                            <importMappings>
+                                <importMapping>DayOfWeek=java.time.DayOfWeek</importMapping>
+                            </importMappings>
+
                             <!-- ton template perso si besoin -->
                             <templateDirectory>${project.basedir}/src/main/resources/openapi-templates</templateDirectory>
                         </configuration>
