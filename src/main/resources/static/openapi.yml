@@ -552,6 +552,13 @@ components:
         - SATURDAY
         - SUNDAY
 
+    UserRole:
+      type: string
+      enum:
+        - CLIENT
+        - EMPLOYEE
+        - MANAGER
+
 
     WorkingHours:
       type: object
@@ -679,6 +686,21 @@ components:
           type: string
           example: "female"
           description: "Gender of the client (e.g. male, female, other)"
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRole'
+          example: ["CLIENT"]
+          description: "User roles (CLIENT, EMPLOYEE, MANAGER). If not provided, defaults to CLIENT."
+        salonPublicId:
+          type: string
+          example: "b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3"
+          description: "Salon public ID (required if role is EMPLOYEE or MANAGER)"
+        workingHours:
+          type: array
+          description: "Employee working hours (only for EMPLOYEE/MANAGER roles)"
+          items:
+            $ref: '#/components/schemas/WorkingHours'
 
     UpdateUserRequest:
       type: object
@@ -700,6 +722,19 @@ components:
           format: date
         gender:
           type: string
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRole'
+          description: "User roles (CLIENT, EMPLOYEE, MANAGER)"
+        salonPublicId:
+          type: string
+          description: "Salon public ID (required if role is EMPLOYEE or MANAGER)"
+        workingHours:
+          type: array
+          description: "Employee working hours (only for EMPLOYEE/MANAGER roles)"
+          items:
+            $ref: '#/components/schemas/WorkingHours'
 
     User:
       allOf:
@@ -720,16 +755,11 @@ components:
               type: string
               format: date-time
               example: 2025-11-13T11:00:00Z
-            workingHours:
-              type: array
-              description: Weekly opening hours of the salon
-              items:
-                $ref: '#/components/schemas/WorkingHours'
-            specialWorkingHours:
-              type: array
-              description: Weekly opening hours of the salon
-              items:
-                $ref: '#/components/schemas/SpecialWorkingHours'
+            salonPublicId:
+              type: string
+              example: "b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3"
+              description: "Salon public ID (only for EMPLOYEE/MANAGER roles)"
+              readOnly: true
 
 
 

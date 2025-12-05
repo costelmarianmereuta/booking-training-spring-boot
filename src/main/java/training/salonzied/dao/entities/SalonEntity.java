@@ -50,6 +50,9 @@ public class SalonEntity {
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "salon")
   private List<CategoryEntity> categories;
 
+  @OneToMany(mappedBy = "salon", fetch = FetchType.LAZY)
+  private List<UserEntity> employees;
+
   @ElementCollection
   @CollectionTable(
           name = "salon_opening_hours",

@@ -47,6 +47,10 @@ public class ReservationEntity {
     @JoinColumn(name = "treatment_id", nullable = false)
     private TreatmentEntity treatment;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    private UserEntity employee;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

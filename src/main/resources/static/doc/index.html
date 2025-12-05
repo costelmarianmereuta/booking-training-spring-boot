@@ -990,6 +990,26 @@ ul.nav-tabs {
       "type" : "string",
       "description" : "Gender of the client (e.g. male, female, other)",
       "example" : "female"
+    },
+    "roles" : {
+      "type" : "array",
+      "description" : "User roles (CLIENT, EMPLOYEE, MANAGER). If not provided, defaults to CLIENT.",
+      "example" : [ "CLIENT" ],
+      "items" : {
+        "$ref" : "#/components/schemas/UserRole"
+      }
+    },
+    "salonPublicId" : {
+      "type" : "string",
+      "description" : "Salon public ID (required if role is EMPLOYEE or MANAGER)",
+      "example" : "b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3"
+    },
+    "workingHours" : {
+      "type" : "array",
+      "description" : "Employee working hours (only for EMPLOYEE/MANAGER roles)",
+      "items" : {
+        "$ref" : "#/components/schemas/WorkingHours"
+      }
     }
   }
 };
@@ -1257,6 +1277,24 @@ ul.nav-tabs {
     },
     "gender" : {
       "type" : "string"
+    },
+    "roles" : {
+      "type" : "array",
+      "description" : "User roles (CLIENT, EMPLOYEE, MANAGER)",
+      "items" : {
+        "$ref" : "#/components/schemas/UserRole"
+      }
+    },
+    "salonPublicId" : {
+      "type" : "string",
+      "description" : "Salon public ID (required if role is EMPLOYEE or MANAGER)"
+    },
+    "workingHours" : {
+      "type" : "array",
+      "description" : "Employee working hours (only for EMPLOYEE/MANAGER roles)",
+      "items" : {
+        "$ref" : "#/components/schemas/WorkingHours"
+      }
     }
   }
 };
@@ -1281,22 +1319,18 @@ ul.nav-tabs {
         "format" : "date-time",
         "example" : "2025-11-13T11:00:00Z"
       },
-      "workingHours" : {
-        "type" : "array",
-        "description" : "Weekly opening hours of the salon",
-        "items" : {
-          "$ref" : "#/components/schemas/WorkingHours"
-        }
-      },
-      "specialWorkingHours" : {
-        "type" : "array",
-        "description" : "Weekly opening hours of the salon",
-        "items" : {
-          "$ref" : "#/components/schemas/SpecialWorkingHours"
-        }
+      "salonPublicId" : {
+        "type" : "string",
+        "description" : "Salon public ID (only for EMPLOYEE/MANAGER roles)",
+        "readOnly" : true,
+        "example" : "b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3"
       }
     }
   } ]
+};
+    defs["UserRole"] = {
+  "type" : "string",
+  "enum" : [ "CLIENT", "EMPLOYEE", "MANAGER" ]
 };
     defs["WorkingHours"] = {
   "required" : [ "dayOfWeek", "endTime", "startTime" ],
@@ -9105,7 +9139,16 @@ $(document).ready(function() {
   &quot;lastName&quot; : &quot;Popescu&quot;,
   &quot;gender&quot; : &quot;female&quot;,
   &quot;phone&quot; : &quot;+32 470 12 34 56&quot;,
+  &quot;roles&quot; : [ &quot;CLIENT&quot; ],
+  &quot;salonPublicId&quot; : &quot;b7a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3&quot;,
   &quot;birthDate&quot; : &quot;1995-03-21T00:00:00.000+00:00&quot;,
+  &quot;workingHours&quot; : [ {
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;
+  }, {
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;
+  } ],
   &quot;email&quot; : &quot;maria.popescu@example.com&quot;
 }'
 </code></pre>
@@ -10519,7 +10562,16 @@ pub fn main() {
   &quot;lastName&quot; : &quot;lastName&quot;,
   &quot;gender&quot; : &quot;gender&quot;,
   &quot;phone&quot; : &quot;phone&quot;,
+  &quot;roles&quot; : [ null, null ],
+  &quot;salonPublicId&quot; : &quot;salonPublicId&quot;,
   &quot;birthDate&quot; : &quot;2000-01-23&quot;,
+  &quot;workingHours&quot; : [ {
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;
+  }, {
+    &quot;startTime&quot; : &quot;09:00:00&quot;,
+    &quot;endTime&quot; : &quot;18:00:00&quot;
+  } ],
   &quot;email&quot; : &quot;email&quot;
 }'
 </code></pre>

@@ -132,7 +132,7 @@ class ReservationIT extends IT {
 
         var user = TestData.getUserEntity();
         user.setId(null);
-        user = userRepository.save(user);
+        userRepository.save(user);
 
         var category = TestData.getCategoryEntity();
         category.setId(null);
@@ -362,5 +362,6 @@ class ReservationIT extends IT {
     }
 
 }
+
 
 

@@ -9,3 +9,4 @@ public class SalonClosedException extends BusinessRuleException {
 
 
 
+
