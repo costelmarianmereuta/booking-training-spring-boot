@@ -29,6 +29,7 @@ public interface ReservationMapper {
     @Mapping(target = "userPublicId", source = "user.publicId")
     @Mapping(target = "treatmentName", source = "treatment.name")
     @Mapping(target = "priceOfBooking", source = "treatment.price")
+    @Mapping(target = "employeePublicId", source = "employee.publicId")
     @Mapping(
             target = "endTime",
             expression = "java(entity.getStartTime().plusMinutes(entity.getDurationOfBooking()))"

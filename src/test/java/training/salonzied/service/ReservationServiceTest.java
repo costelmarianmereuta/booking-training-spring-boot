@@ -68,6 +68,7 @@ class ReservationServiceTest {
     private TreatmentEntity treatment;
     private SalonEntity salon;
     private UserEntity user;
+    private UserEntity employee;
     private ReservationRequest reservationRequest;
     private ReservationEntity savedReservation;
     private Reservation reservationDto;
@@ -77,8 +78,10 @@ class ReservationServiceTest {
         // Given - Setup date de test folosind TestData
         treatment = TestData.getTreatmentEntity();
         salon = TestData.getSalonEntity();
-        salon.setOpeningHours(createWorkingHours());
+        salon.setOpeningHours(TestData.getWorkingHours());
         user = TestData.getUserEntity();
+        employee = TestData.getEmployeeEntity();
+        employee.setSalon(salon);
 
         LocalDateTime startTime = LocalDateTime.of(2025, 12, 20, 10, 30);
         reservationRequest = new ReservationRequest();
@@ -98,6 +101,7 @@ class ReservationServiceTest {
                 .treatment(treatment)
                 .salon(salon)
                 .user(user)
+                .employee(employee)
                 .build();
 
         reservationDto = new Reservation();
@@ -115,8 +119,11 @@ class ReservationServiceTest {
                 .thenReturn(Optional.of(salon));
         when(userRepository.findByPublicId(user.getPublicId()))
                 .thenReturn(Optional.of(user));
-        when(reservationRepository.findAll(any(Specification.class)))
-                .thenReturn(List.of()); // Nu există rezervări conflictuale
+        when(userRepository.findEmployeesBySalonId(salon.getId()))
+                .thenReturn(List.of(employee)); // Employee disponibil
+        when(reservationRepository.findPotentialConflictingReservationsForEmployee(
+                any(), any(), any(), any()))
+                .thenReturn(List.of()); // Nu există rezervări conflictuale pentru employee
         when(reservationRepository.save(any(ReservationEntity.class)))
                 .thenReturn(savedReservation);
         when(reservationMapper.entityToReservationDto(savedReservation))
@@ -134,6 +141,7 @@ class ReservationServiceTest {
         verify(treatmentRepository, times(1)).findByName(treatment.getName());
         verify(salonRepository, times(1)).findByPublicId(salon.getPublicId());
         verify(userRepository, times(1)).findByPublicId(user.getPublicId());
+        verify(userRepository, times(1)).findEmployeesBySalonId(salon.getId());
         verify(reservationRepository, times(1)).save(any(ReservationEntity.class));
         verify(reservationMapper, times(1)).entityToReservationDto(savedReservation);
     }
@@ -196,7 +204,8 @@ class ReservationServiceTest {
                 .thenReturn(Optional.of(salon));
         when(userRepository.findByPublicId(user.getPublicId()))
                 .thenReturn(Optional.of(user));
-        // Nu configurăm mock pentru findAll() pentru că excepția se aruncă în validateSalonIsOpen înainte
+        when(userRepository.findEmployeesBySalonId(salon.getId()))
+                .thenReturn(List.of(employee));
 
         // When & Then
         SalonClosedException exception = assertThrows(
@@ -206,7 +215,6 @@ class ReservationServiceTest {
 
         assertTrue(exception.getMessage().contains("închis"));
         verify(reservationRepository, never()).save(any());
-        verify(reservationRepository, never()).findAll(any(Specification.class));
     }
 
     @Test
@@ -222,7 +230,8 @@ class ReservationServiceTest {
                 .thenReturn(Optional.of(salon));
         when(userRepository.findByPublicId(user.getPublicId()))
                 .thenReturn(Optional.of(user));
-        // Nu configurăm mock pentru findAll() pentru că excepția se aruncă în validateSalonIsOpen înainte
+        when(userRepository.findEmployeesBySalonId(salon.getId()))
+                .thenReturn(List.of(employee));
 
         // When & Then - Când rezervarea depășește programul, se aruncă ReservationOutsideOpeningHoursException
         ReservationOutsideOpeningHoursException exception = assertThrows(
@@ -232,44 +241,6 @@ class ReservationServiceTest {
 
         assertTrue(exception.getMessage().contains("depășește") || exception.getMessage().contains("program"));
         verify(reservationRepository, never()).save(any());
-        verify(reservationRepository, never()).findAll(any(Specification.class));
-    }
-
-    // Helper method pentru crearea programului de lucru
-    private List<WorkingHour> createWorkingHours() {
-        return List.of(
-                WorkingHour.builder()
-                        .dayOfWeek(DayOfWeek.MONDAY)
-                        .startTime(LocalTime.of(9, 0))
-                        .endTime(LocalTime.of(18, 0))
-                        .build(),
-                WorkingHour.builder()
-                        .dayOfWeek(DayOfWeek.TUESDAY)
-                        .startTime(LocalTime.of(9, 0))
-                        .endTime(LocalTime.of(18, 0))
-                        .build(),
-                WorkingHour.builder()
-                        .dayOfWeek(DayOfWeek.WEDNESDAY)
-                        .startTime(LocalTime.of(9, 0))
-                        .endTime(LocalTime.of(18, 0))
-                        .build(),
-                WorkingHour.builder()
-                        .dayOfWeek(DayOfWeek.THURSDAY)
-                        .startTime(LocalTime.of(9, 0))
-                        .endTime(LocalTime.of(18, 0))
-                        .build(),
-                WorkingHour.builder()
-                        .dayOfWeek(DayOfWeek.FRIDAY)
-                        .startTime(LocalTime.of(9, 0))
-                        .endTime(LocalTime.of(18, 0))
-                        .build(),
-                WorkingHour.builder()
-                        .dayOfWeek(DayOfWeek.SATURDAY)
-                        .startTime(LocalTime.of(9, 0))
-                        .endTime(LocalTime.of(16, 0))
-                        .build()
-                // Nu includem duminica - salonul este închis
-        );
     }
 }
 

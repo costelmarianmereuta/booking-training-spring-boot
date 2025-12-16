@@ -156,6 +156,24 @@ public class TestData {
             .phone("+32 470 12 34 56")
             .birthDate("1995-03-21")
             .gender("female")
+            .roles(java.util.Set.of(training.salonzied.dao.entities.UserRole.CLIENT))
+            .createdAt(LocalDateTime.now())
+            .build();
+  }
+
+  public UserEntity getEmployeeEntity() {
+    return UserEntity.builder()
+            .id(2L)
+            .publicId("e1a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3")
+            .firstName("Ion")
+            .lastName("Ionescu")
+            .email("ion.ionescu@example.com")
+            .phone("+32 470 12 34 57")
+            .birthDate("1990-05-15")
+            .gender("male")
+            .roles(java.util.Set.of(training.salonzied.dao.entities.UserRole.EMPLOYEE))
+            .salon(getSalonEntity())
+            .workingHours(getWorkingHours())
             .createdAt(LocalDateTime.now())
             .build();
   }
@@ -188,6 +206,7 @@ public class TestData {
             .salon(getSalonEntity())
             .user(getUserEntity())
             .treatment(getTreatmentEntity())
+            .employee(getEmployeeEntity())
             .build();
   }
 
@@ -225,5 +244,7 @@ public class TestData {
                     .build()
     );
   }
+
+
 
 }

@@ -5,3 +5,7 @@ public class EmployeeMustHaveSalonException extends BusinessRuleException {
         super(message);
     }
 }
+
+
+
+

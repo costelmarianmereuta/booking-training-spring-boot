@@ -43,6 +43,50 @@ spring:
         web-allow-others: true
   flyway:
     enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    connection-timeout: 15000   # optional
+    publisher-confirm-type: correlated   # optional
+    publisher-returns: true              # optional
+    #retry listener
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 5
+          max-interval: 10000
+          multiplier: 2
+    #retry producer
+    template:
+      retry:
+        enabled: true
+        max-attempts: 3
+        initial-interval: 1000
+        multiplier: 1.5
+        max-interval: 5000
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: mereuta.marian@gmail.com
+    password: zbeckedecjnqdmyg
+
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+    # pentru JSON converter (opțional dacă îl ai ca bean)
+    jackson:
+      serialization:
+        FAIL_ON_EMPTY_BEANS: false
 
     locations: classpath:db/migration
 server:

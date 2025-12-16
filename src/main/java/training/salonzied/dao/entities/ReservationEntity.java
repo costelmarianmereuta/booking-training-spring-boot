@@ -48,7 +48,7 @@ public class ReservationEntity {
     private TreatmentEntity treatment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "employee_id", nullable = false)
     private UserEntity employee;
 
     @CreationTimestamp

@@ -10,3 +10,7 @@ public class NoOpeningHoursConfiguredException extends BusinessRuleException {
 
 
 
+
+
+
+

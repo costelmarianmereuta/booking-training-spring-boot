@@ -5,3 +5,7 @@ public class NoEmployeeAvailableException extends BusinessRuleException {
         super(message);
     }
 }
+
+
+
+

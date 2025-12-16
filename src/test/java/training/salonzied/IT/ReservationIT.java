@@ -47,10 +47,16 @@ class ReservationIT extends IT {
         salon.setOpeningHours(TestData.getWorkingHours());
         salon = salonRepository.save(salon);
 
-        // Setup user
+        // Setup user (client)
         var user = TestData.getUserEntity();
         user.setId(null);
         user = userRepository.save(user);
+
+        // Setup employee
+        var employee = TestData.getEmployeeEntity();
+        employee.setId(null);
+        employee.setSalon(salon);
+        employee = userRepository.save(employee);
 
         // Setup category
         var category = TestData.getCategoryEntity();
@@ -70,6 +76,7 @@ class ReservationIT extends IT {
         reservation.setSalon(salon);
         reservation.setUser(user);
         reservation.setTreatment(treatment);
+        reservation.setEmployee(employee);
         reservationRepository.save(reservation);
     }
 
@@ -132,7 +139,13 @@ class ReservationIT extends IT {
 
         var user = TestData.getUserEntity();
         user.setId(null);
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        // Setup employee
+        var employee = TestData.getEmployeeEntity();
+        employee.setId(null);
+        employee.setSalon(salon);
+        employee = userRepository.save(employee);
 
         var category = TestData.getCategoryEntity();
         category.setId(null);
@@ -155,6 +168,7 @@ class ReservationIT extends IT {
                 .andExpect(jsonPath("$.status").value("SCHEDULED"))
                 .andExpect(jsonPath("$.notes").value("Client prefers soft massage"))
                 .andExpect(jsonPath("$.publicId").isNotEmpty())
+                .andExpect(jsonPath("$.employeePublicId").exists())
                 .andExpect(jsonPath("$.createdAt").exists());
     }
 
@@ -206,9 +220,9 @@ class ReservationIT extends IT {
         mockMvc.perform(post("/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reservationRequest)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.title").value("Bad Request"))
-                .andExpect(jsonPath("$.errorCode").value("BUSINESS_RULE_VIOLATION"));
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.title").value("Unprocessable Entity"))
+                .andExpect(jsonPath("$.errorCode").value("UNPROCESSABLE_ENTITY"));
     }
 
     @Test
@@ -220,9 +234,9 @@ class ReservationIT extends IT {
         mockMvc.perform(post("/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reservationRequest)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.title").value("Bad Request"))
-                .andExpect(jsonPath("$.errorCode").value("BUSINESS_RULE_VIOLATION"));
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.title").value("Unprocessable Entity"))
+                .andExpect(jsonPath("$.errorCode").value("UNPROCESSABLE_ENTITY"));
     }
 
     @Test
@@ -293,6 +307,12 @@ class ReservationIT extends IT {
         user.setId(null);
         user = userRepository.save(user);
 
+        // Setup employee
+        var employee = TestData.getEmployeeEntity();
+        employee.setId(null);
+        employee.setSalon(salon);
+        employee = userRepository.save(employee);
+
         var category = TestData.getCategoryEntity();
         category.setId(null);
         category.setSalon(salon);
@@ -308,6 +328,7 @@ class ReservationIT extends IT {
         reservation.setSalon(salon);
         reservation.setUser(user);
         reservation.setTreatment(treatment);
+        reservation.setEmployee(employee);
         reservation = reservationRepository.save(reservation);
 
         var updateRequest = TestData.getReservationUpdateRequest();

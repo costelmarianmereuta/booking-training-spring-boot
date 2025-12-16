@@ -8,8 +8,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import training.salonzied.dao.entities.SalonEntity;
 import training.salonzied.dao.entities.UserEntity;
+import training.salonzied.dao.entities.UserRole;
+import training.salonzied.dao.repo.SalonRepository;
 import training.salonzied.dao.repo.UserRepository;
+import training.salonzied.error.BusinessRuleException;
+import training.salonzied.error.EmployeeMustHaveSalonException;
 import training.salonzied.error.EntityNotFoundException;
 import training.salonzied.mapper.UserMapper;
 import util.TestData;
@@ -30,6 +35,9 @@ class UserServiceTest {
 
     @Mock
     private UserMapper userMapper;
+
+    @Mock
+    private SalonRepository salonRepository;
 
     @InjectMocks
     private UserService userService;
@@ -82,6 +90,51 @@ class UserServiceTest {
         verify(userMapper, times(1)).toUserEntity(createRequest);
         verify(userRepository, times(1)).save(userEntity);
         verify(userMapper, times(1)).entityToUserDto(userEntity);
+    }
+
+    @Test
+    @DisplayName("Should throw EmployeeMustHaveSalonException when creating employee without salon")
+    void addUser_EmployeeWithoutSalon() {
+        // Given
+        var createRequest = TestData.getCreateUserRequest();
+        createRequest.setRoles(java.util.List.of(com.salonized.dto.UserRole.EMPLOYEE));
+        
+        var employeeEntity = TestData.getEmployeeEntity();
+        employeeEntity.setSalon(null); // No salon
+        employeeEntity.setRoles(java.util.Set.of(UserRole.EMPLOYEE));
+        
+        when(userMapper.toUserEntity(createRequest)).thenReturn(employeeEntity);
+
+        // When & Then
+        EmployeeMustHaveSalonException exception = assertThrows(
+                EmployeeMustHaveSalonException.class,
+                () -> userService.addUser(createRequest)
+        );
+
+        assertTrue(exception.getMessage().contains("EMPLOYEE") || exception.getMessage().contains("MANAGER"));
+        assertTrue(exception.getMessage().contains("salon"));
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw BusinessRuleException when CLIENT has working hours")
+    void addUser_ClientWithWorkingHours() {
+        // Given
+        var createRequest = TestData.getCreateUserRequest();
+        var clientEntity = TestData.getUserEntity();
+        clientEntity.setRoles(java.util.Set.of(UserRole.CLIENT));
+        clientEntity.setWorkingHours(TestData.getWorkingHours()); // CLIENT cu working hours
+        
+        when(userMapper.toUserEntity(createRequest)).thenReturn(clientEntity);
+
+        // When & Then
+        BusinessRuleException exception = assertThrows(
+                BusinessRuleException.class,
+                () -> userService.addUser(createRequest)
+        );
+
+        assertTrue(exception.getMessage().contains("CLIENT") && exception.getMessage().contains("working hours"));
+        verify(userRepository, never()).save(any());
     }
 
     @Test

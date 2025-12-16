@@ -28,6 +28,8 @@ import training.salonzied.error.SalonClosedException;
 import training.salonzied.mapper.ReservationMapper;
 import training.salonzied.dao.repo.ReservationRepository;
 import training.salonzied.dao.repo.ReservationSpec;
+import training.salonzied.messaging.ReservationCreatedEvent;
+import training.salonzied.messaging.ReservationEventPublisher;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -46,6 +48,7 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final ReservationRepository reservationRepository;
     private final ReservationMapper reservationMapper;
+    private final ReservationEventPublisher reservationEventPublisher;
 
     public Reservation createReservation(ReservationRequest request) {
         TreatmentEntity treatment = treatmentRepository.findByName(request.getTreatmentName()).orElseThrow(
@@ -85,7 +88,19 @@ public class ReservationService {
                 .build();
 
         ReservationEntity reservationSaved = reservationRepository.save(reservationEntity);
-       return reservationMapper.entityToReservationDto(reservationSaved);
+        ReservationCreatedEvent event = ReservationCreatedEvent.builder()
+                .reservationId(reservationSaved.getPublicId())
+                .serviceName(reservationSaved.getTreatment().getName())
+                .reservationName(reservationSaved.getUser().getFirstName())
+                .salonName(reservationSaved.getSalon().getName())
+                .employeeName(reservationSaved.getEmployee().getFirstName())
+                .reservationDate(reservationSaved.getStartTime())
+                .userEmail(reservationSaved.getUser().getEmail())
+                .userName(reservationSaved.getUser().getFirstName() + " " + reservationSaved.getUser().getLastName())
+                .build();
+        reservationEventPublisher.publishReservationCreated(event);
+
+        return reservationMapper.entityToReservationDto(reservationSaved);
     }
 
     public List<Reservation> getReservations(String salonPublicId, String userPublicId, String treatmentName, LocalDate localDate, ReservationStatus reservationStatus) {

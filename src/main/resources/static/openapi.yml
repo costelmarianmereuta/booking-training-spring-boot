@@ -640,6 +640,11 @@ components:
               type: integer
               example: 60
               description: Duration in minutes at the time of booking
+            employeePublicId:
+              type: string
+              example: "e1a6c6f4-9d5a-4f91-8e71-39ef99e8c9c3"
+              description: "Public ID of the employee assigned to this reservation (assigned automatically)"
+              readOnly: true
             endTime:
               type: string
               format: date-time

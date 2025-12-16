@@ -8,3 +8,7 @@ DROP CONSTRAINT IF EXISTS fk_user;
 ALTER TABLE reservations
 ADD CONSTRAINT fk_user
     FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+
+
